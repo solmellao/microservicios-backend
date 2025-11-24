@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json.schemastore.org/nest-cli",
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "servicios/puerta-enlace/src",
+  "compilerOptions": {
+    "deleteOutDir": true,
+    "webpack": true,
+    "tsConfigPath": "servicios/puerta-enlace/tsconfig.app.json"
+  },
+  "monorepo": true,
+  "root": "servicios/puerta-enlace",
+  "projects": {
+    "puerta-enlace": {
+      "type": "application",
+      "root": "servicios/puerta-enlace",
+      "entryFile": "principal",
+      "sourceRoot": "servicios/puerta-enlace/src",
+      "compilerOptions": {
+        "tsConfigPath": "servicios/puerta-enlace/tsconfig.app.json"
+      }
+    },
+    "compartido": {
+      "type": "library",
+      "root": "compartido",
+      "entryFile": "index",
+      "sourceRoot": "compartido/src",
+      "compilerOptions": {
+        "tsConfigPath": "compartido/tsconfig.lib.json"
+      }
+    },
+    "autenticacion": {
+      "type": "application",
+      "root": "servicios/autenticacion",
+      "entryFile": "principal",
+      "sourceRoot": "servicios/autenticacion/src",
+      "compilerOptions": {
+        "tsConfigPath": "servicios/autenticacion/tsconfig.app.json"
+      }
+    },
+    "catalogo": {
+      "type": "application",
+      "root": "servicios/catalogo",
+      "entryFile": "principal",
+      "sourceRoot": "servicios/catalogo/src",
+      "compilerOptions": {
+        "tsConfigPath": "servicios/catalogo/tsconfig.app.json"
+      }
+    },
+    "pedidos": {
+      "type": "application",
+      "root": "servicios/pedidos",
+      "entryFile": "principal",
+      "sourceRoot": "servicios/pedidos/src",
+      "compilerOptions": {
+        "tsConfigPath": "servicios/pedidos/tsconfig.app.json"
+      }
+    }
+  }
+}

@@ -1,0 +1,32 @@
+// Configuración de Prisma para PostgreSQL
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("URL_BD_POSTGRES")
+}
+
+// =====================================================
+// MODELO DE USUARIO
+// =====================================================
+model Usuario {
+  id           Int       @id @default(autoincrement())
+  correo       String    @unique
+  nombre       String
+  claveHash    String    @map("clave_hash")
+  rol          RolUsuario @default(USUARIO)
+  fechaCreacion DateTime  @default(now()) @map("fecha_creacion")
+  fechaActualizacion DateTime @updatedAt @map("fecha_actualizacion")
+
+  @@map("usuarios")
+}
+
+// =====================================================
+// ENUMERACIÓN DE ROLES
+// =====================================================
+enum RolUsuario {
+  ADMIN
+  USUARIO
+}
