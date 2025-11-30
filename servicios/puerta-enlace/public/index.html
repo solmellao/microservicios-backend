@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Tienda - Documentación</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 48px;
+            background: linear-gradient(135deg, #ec4899 0%, #fb923c 100%);
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #6b7280;
+            font-size: 18px;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
+
+        .card h2 {
+            color: #ec4899;
+            font-size: 28px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card h3 {
+            color: #fb923c;
+            font-size: 20px;
+            margin: 20px 0 10px 0;
+        }
+
+        .credentials {
+            background: linear-gradient(135deg, #fce7f3 0%, #fed7aa 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 15px 0;
+        }
+
+        .credential-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        .credential-item strong {
+            color: #ec4899;
+            font-size: 16px;
+        }
+
+        .credential-item code {
+            background: rgba(236, 72, 153, 0.1);
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: #ec4899;
+            font-family: monospace;
+        }
+
+        .steps {
+            counter-reset: step;
+        }
+
+        .step {
+            background: #f9fafb;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 15px 0;
+            border-left: 5px solid #ec4899;
+            counter-increment: step;
+            position: relative;
+            padding-left: 80px;
+        }
+
+        .step::before {
+            content: counter(step);
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, #ec4899 0%, #fb923c 100%);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .endpoints {
+            display: grid;
+            gap: 15px;
+        }
+
+        .endpoint {
+            background: #f9fafb;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 5px solid #3b82f6;
+        }
+
+        .endpoint.post {
+            border-left-color: #10b981;
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        .endpoint.get {
+            border-left-color: #3b82f6;
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .endpoint-method {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+
+        .endpoint-method.post {
+            background: #10b981;
+            color: white;
+        }
+
+        .endpoint-method.get {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .endpoint-path {
+            font-family: monospace;
+            font-size: 16px;
+            color: #1f2937;
+        }
+
+        .endpoint-desc {
+            margin-top: 10px;
+            color: #6b7280;
+        }
+
+        .services {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .service {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            border-radius: 12px;
+            color: white;
+        }
+
+        .service h4 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .service p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #ec4899 0%, #fb923c 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 600;
+            margin: 10px 5px;
+            transition: transform 0.2s;
+            box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(236, 72, 153, 0.4);
+        }
+
+        .code-block {
+            background: #1f2937;
+            color: #10b981;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: monospace;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 32px;
+            }
+            
+            .services {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛒 API de Tienda</h1>
+            <p>Sistema de comercio electrónico con microservicios</p>
+            <div style="margin-top: 20px;">
+                <a href="http://localhost:4000/api" class="btn">📚 Ver Swagger</a>
+                <a href="http://localhost:5173" class="btn">🎨 Ir al Frontend</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>🔐 Credenciales de Prueba</h2>
+            <div class="credentials">
+                <div class="credential-item">
+                    <strong>👑 Administrador</strong><br>
+                    Email: <code>admin@tienda.com</code><br>
+                    Contraseña: <code>123456</code>
+                </div>
+                <div class="credential-item">
+                    <strong>👤 Usuario Normal</strong><br>
+                    Email: <code>usuario@tienda.com</code><br>
+                    Contraseña: <code>123456</code>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>🚀 Cómo Usar la API</h2>
+            <div class="steps">
+                <div class="step">
+                    <strong>Iniciar Sesión</strong><br>
+                    Haz una petición POST a <code>/acceso/iniciar-sesion</code> con tu correo y contraseña
+                </div>
+                <div class="step">
+                    <strong>Copiar el Token</strong><br>
+                    La respuesta incluirá un <code>token</code> JWT. Cópialo.
+                </div>
+                <div class="step">
+                    <strong>Autorizar en Swagger</strong><br>
+                    Click en "Authorize" en Swagger y pega el token
+                </div>
+                <div class="step">
+                    <strong>Usar los Endpoints</strong><br>
+                    Ahora puedes usar todos los endpoints protegidos
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📡 Endpoints Principales</h2>
+            <div class="endpoints">
+                <div class="endpoint post">
+                    <span class="endpoint-method post">POST</span>
+                    <span class="endpoint-path">/acceso/iniciar-sesion</span>
+                    <div class="endpoint-desc">Iniciar sesión y obtener token JWT</div>
+                </div>
+
+                <div class="endpoint get">
+                    <span class="endpoint-method get">GET</span>
+                    <span class="endpoint-path">/productos</span>
+                    <div class="endpoint-desc">Listar todos los productos disponibles</div>
+                </div>
+
+                <div class="endpoint post">
+                    <span class="endpoint-method post">POST</span>
+                    <span class="endpoint-path">/productos</span>
+                    <div class="endpoint-desc">Crear un nuevo producto (Solo Admin)</div>
+                </div>
+
+                <div class="endpoint post">
+                    <span class="endpoint-method post">POST</span>
+                    <span class="endpoint-path">/carrito/agregar</span>
+                    <div class="endpoint-desc">Agregar un producto al carrito</div>
+                </div>
+
+                <div class="endpoint post">
+                    <span class="endpoint-method post">POST</span>
+                    <span class="endpoint-path">/carrito/finalizar-compra</span>
+                    <div class="endpoint-desc">Finalizar compra y crear pedido</div>
+                </div>
+
+                <div class="endpoint get">
+                    <span class="endpoint-method get">GET</span>
+                    <span class="endpoint-path">/pedidos</span>
+                    <div class="endpoint-desc">Ver historial de pedidos</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>🏗️ Arquitectura de Microservicios</h2>
+            <div class="services">
+                <div class="service">
+                    <h4>🔐 Autenticación</h4>
+                    <p>Puerto: 5001</p>
+                    <p>BD: PostgreSQL</p>
+                    <p>Login, registro, JWT</p>
+                </div>
+                <div class="service">
+                    <h4>📦 Catálogo</h4>
+                    <p>Puerto: 5002</p>
+                    <p>BD: MySQL</p>
+                    <p>Productos, inventario</p>
+                </div>
+                <div class="service">
+                    <h4>🧾 Pedidos</h4>
+                    <p>Puerto: 5003</p>
+                    <p>BD: MongoDB</p>
+                    <p>Órdenes, historial</p>
+                </div>
+                <div class="service">
+                    <h4>🚀 Gateway</h4>
+                    <p>Puerto: 4000</p>
+                    <p>API REST HTTP</p>
+                    <p>Punto de entrada</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>💻 Ejemplo de Uso (cURL)</h2>
+            <h3>1. Iniciar Sesión</h3>
+            <div class="code-block">
+curl -X POST http://localhost:4000/acceso/iniciar-sesion \
+  -H "Content-Type: application/json" \
+  -d '{"correo":"admin@tienda.com","clave":"123456"}'
+            </div>
+
+            <h3>2. Usar el Token</h3>
+            <div class="code-block">
+curl -X GET http://localhost:4000/productos \
+  -H "Authorization: Bearer TU_TOKEN_AQUI"
+            </div>
+        </div>
+    </div>
+</body>
+</html>

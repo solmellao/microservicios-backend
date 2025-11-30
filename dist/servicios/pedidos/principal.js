@@ -96,39 +96,79 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var _a;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.ControladorGestionPedidos = void 0;
+exports.ControladorPedidos = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const microservices_1 = __webpack_require__(/*! @nestjs/microservices */ "@nestjs/microservices");
 const gestion_service_1 = __webpack_require__(/*! ./gestion.service */ "./servicios/pedidos/src/gestion/gestion.service.ts");
-let ControladorGestionPedidos = class ControladorGestionPedidos {
-    servicioGestion;
-    constructor(servicioGestion) {
-        this.servicioGestion = servicioGestion;
+let ControladorPedidos = class ControladorPedidos {
+    servicioPedidos;
+    constructor(servicioPedidos) {
+        this.servicioPedidos = servicioPedidos;
     }
-    obtenerTodos() {
-        return this.servicioGestion.obtenerTodos();
+    async crearPedido(datos) {
+        console.log('📋 Recibiendo solicitud de crear pedido:', datos);
+        try {
+            const pedido = await this.servicioPedidos.crearPedido(datos);
+            console.log('✅ Pedido creado exitosamente:', pedido);
+            return pedido;
+        }
+        catch (error) {
+            console.error('❌ Error al crear pedido:', error);
+            throw error;
+        }
     }
-    crear(datos) {
-        return this.servicioGestion.crear(datos);
+    async obtenerPedidos() {
+        console.log('📋 Obteniendo todos los pedidos');
+        return this.servicioPedidos.obtenerTodos();
+    }
+    async obtenerPedidoPorId(datos) {
+        console.log('📋 Obteniendo pedido por ID:', datos.id);
+        return this.servicioPedidos.obtenerPorId(datos.id);
+    }
+    async obtenerPedidosUsuario(datos) {
+        console.log('📋 Obteniendo pedidos del usuario:', datos.idUsuario);
+        return this.servicioPedidos.obtenerPorUsuario(datos.idUsuario);
+    }
+    async actualizarEstado(datos) {
+        console.log('📋 Actualizando estado del pedido:', datos);
+        return this.servicioPedidos.actualizarEstado(datos.id, datos.estado);
     }
 };
-exports.ControladorGestionPedidos = ControladorGestionPedidos;
-__decorate([
-    (0, microservices_1.MessagePattern)({ cmd: 'obtener_todos_pedidos' }),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
-], ControladorGestionPedidos.prototype, "obtenerTodos", null);
+exports.ControladorPedidos = ControladorPedidos;
 __decorate([
     (0, microservices_1.MessagePattern)({ cmd: 'crear_pedido' }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", void 0)
-], ControladorGestionPedidos.prototype, "crear", null);
-exports.ControladorGestionPedidos = ControladorGestionPedidos = __decorate([
+    __metadata("design:returntype", Promise)
+], ControladorPedidos.prototype, "crearPedido", null);
+__decorate([
+    (0, microservices_1.MessagePattern)({ cmd: 'obtener-pedidos' }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], ControladorPedidos.prototype, "obtenerPedidos", null);
+__decorate([
+    (0, microservices_1.MessagePattern)({ cmd: 'obtener-pedido-por-id' }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], ControladorPedidos.prototype, "obtenerPedidoPorId", null);
+__decorate([
+    (0, microservices_1.MessagePattern)({ cmd: 'obtener-pedidos-usuario' }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], ControladorPedidos.prototype, "obtenerPedidosUsuario", null);
+__decorate([
+    (0, microservices_1.MessagePattern)({ cmd: 'actualizar-estado-pedido' }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], ControladorPedidos.prototype, "actualizarEstado", null);
+exports.ControladorPedidos = ControladorPedidos = __decorate([
     (0, common_1.Controller)(),
-    __metadata("design:paramtypes", [typeof (_a = typeof gestion_service_1.ServicioGestionPedidos !== "undefined" && gestion_service_1.ServicioGestionPedidos) === "function" ? _a : Object])
-], ControladorGestionPedidos);
+    __metadata("design:paramtypes", [typeof (_a = typeof gestion_service_1.ServicioPedidos !== "undefined" && gestion_service_1.ServicioPedidos) === "function" ? _a : Object])
+], ControladorPedidos);
 
 
 /***/ }),
@@ -159,13 +199,11 @@ exports.ModuloGestionPedidos = ModuloGestionPedidos;
 exports.ModuloGestionPedidos = ModuloGestionPedidos = __decorate([
     (0, common_1.Module)({
         imports: [
-            mongoose_1.MongooseModule.forFeature([
-                { name: pedido_schema_1.Pedido.name, schema: pedido_schema_1.EsquemaPedido }
-            ]),
+            mongoose_1.MongooseModule.forFeature([{ name: pedido_schema_1.Pedido.name, schema: pedido_schema_1.EsquemaPedido }]),
         ],
-        controllers: [gestion_controller_1.ControladorGestionPedidos],
-        providers: [gestion_service_1.ServicioGestionPedidos],
-        exports: [gestion_service_1.ServicioGestionPedidos],
+        controllers: [gestion_controller_1.ControladorPedidos],
+        providers: [gestion_service_1.ServicioPedidos],
+        exports: [gestion_service_1.ServicioPedidos],
     })
 ], ModuloGestionPedidos);
 
@@ -193,39 +231,57 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 var _a;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.ServicioGestionPedidos = void 0;
+exports.ServicioPedidos = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const mongoose_1 = __webpack_require__(/*! @nestjs/mongoose */ "@nestjs/mongoose");
 const mongoose_2 = __webpack_require__(/*! mongoose */ "mongoose");
 const pedido_schema_1 = __webpack_require__(/*! ../esquemas/pedido.schema */ "./servicios/pedidos/src/esquemas/pedido.schema.ts");
-let ServicioGestionPedidos = class ServicioGestionPedidos {
+let ServicioPedidos = class ServicioPedidos {
     modeloPedido;
     constructor(modeloPedido) {
         this.modeloPedido = modeloPedido;
     }
-    async obtenerTodos() {
-        return this.modeloPedido.find().exec();
-    }
-    async crear(datosPedido) {
+    async crearPedido(datos) {
         const nuevoPedido = new this.modeloPedido({
-            idUsuario: String(datosPedido.idUsuario),
-            montoTotal: datosPedido.total,
-            articulos: datosPedido.articulos.map(art => ({
-                idProducto: art.idProducto,
-                nombreProducto: art.nombreProducto,
-                cantidad: art.cantidad,
-                precioAlMomentoCompra: art.precio,
-            })),
+            idUsuario: datos.idUsuario,
+            articulos: datos.articulos,
+            montoTotal: datos.montoTotal || this.calcularTotal(datos.articulos),
+            estado: 'PENDIENTE',
+            fechaCreacion: new Date(),
         });
         return nuevoPedido.save();
     }
+    async obtenerTodos() {
+        return this.modeloPedido.find().sort({ fechaCreacion: -1 }).exec();
+    }
+    async obtenerPorId(id) {
+        return this.modeloPedido.findById(id).exec();
+    }
+    async obtenerPorUsuario(idUsuario) {
+        return this.modeloPedido
+            .find({ idUsuario })
+            .sort({ fechaCreacion: -1 })
+            .exec();
+    }
+    async actualizarEstado(id, estado) {
+        return this.modeloPedido
+            .findByIdAndUpdate(id, { estado }, { new: true })
+            .exec();
+    }
+    calcularTotal(articulos) {
+        return articulos.reduce((total, item) => {
+            const precio = item.precio || item.precioAlMomentoCompra || 0;
+            const cantidad = item.cantidad || 0;
+            return total + precio * cantidad;
+        }, 0);
+    }
 };
-exports.ServicioGestionPedidos = ServicioGestionPedidos;
-exports.ServicioGestionPedidos = ServicioGestionPedidos = __decorate([
+exports.ServicioPedidos = ServicioPedidos;
+exports.ServicioPedidos = ServicioPedidos = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(pedido_schema_1.Pedido.name)),
     __metadata("design:paramtypes", [typeof (_a = typeof mongoose_2.Model !== "undefined" && mongoose_2.Model) === "function" ? _a : Object])
-], ServicioGestionPedidos);
+], ServicioPedidos);
 
 
 /***/ }),

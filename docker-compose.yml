@@ -1,56 +1,107 @@
 version: '3.8'
 
 services:
-  # PostgreSQL para el servicio de autenticación
+  # ============================================
+  # PostgreSQL - Base de datos para Autenticación
+  # ============================================
   postgres:
     image: postgres:16-alpine
     container_name: bd_usuarios
+    restart: unless-stopped
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: usuarios_bd
+      POSTGRES_INITDB_ARGS: "-E UTF8"
+      TZ: America/Argentina/Buenos_Aires
     ports:
       - "5432:5432"
     volumes:
       - datos_postgres:/var/lib/postgresql/data
     networks:
       - red_tienda
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d usuarios_bd"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
-  # MySQL para el servicio de catálogo
+  # ============================================
+  # MySQL - Base de datos para Catálogo
+  # ============================================
   mysql:
     image: mysql:8.0
     container_name: bd_productos
-    command: --default-authentication-plugin=mysql_native_password
+    restart: unless-stopped
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     environment:
       MYSQL_ROOT_PASSWORD: admin
       MYSQL_DATABASE: productos_bd
       MYSQL_USER: admin
       MYSQL_PASSWORD: admin
+      TZ: America/Argentina/Buenos_Aires
     ports:
       - "3306:3306"
     volumes:
       - datos_mysql:/var/lib/mysql
     networks:
       - red_tienda
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uadmin", "-padmin"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
-  # MongoDB para el servicio de pedidos
+  # ============================================
+  # MongoDB - Base de datos para Pedidos
+  # ============================================
   mongo:
     image: mongo:7
     container_name: bd_pedidos
+    restart: unless-stopped
     environment:
       MONGO_INITDB_DATABASE: pedidos_bd
+      TZ: America/Argentina/Buenos_Aires
     ports:
       - "27017:27017"
     volumes:
       - datos_mongo:/data/db
+      - datos_mongo_config:/data/configdb
     networks:
       - red_tienda
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/pedidos_bd --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
+# ============================================
+# Volúmenes Persistentes
+# ============================================
 volumes:
   datos_postgres:
+    driver: local
+    name: tienda_postgres_data
   datos_mysql:
+    driver: local
+    name: tienda_mysql_data
   datos_mongo:
+    driver: local
+    name: tienda_mongo_data
+  datos_mongo_config:
+    driver: local
+    name: tienda_mongo_config
 
+# ============================================
+# Red Personalizada
+# ============================================
 networks:
   red_tienda:
     driver: bridge
+    name: red_tienda
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

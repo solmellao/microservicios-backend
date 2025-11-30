@@ -87,6 +87,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 __exportStar(__webpack_require__(/*! ./iniciar-sesion.dto */ "./compartido/dtos/iniciar-sesion.dto.ts"), exports);
+__exportStar(__webpack_require__(/*! ./registrar-usuario.dto */ "./compartido/dtos/registrar-usuario.dto.ts"), exports);
 __exportStar(__webpack_require__(/*! ./producto.dto */ "./compartido/dtos/producto.dto.ts"), exports);
 __exportStar(__webpack_require__(/*! ./compra.dto */ "./compartido/dtos/compra.dto.ts"), exports);
 
@@ -228,6 +229,65 @@ __decorate([
 
 /***/ }),
 
+/***/ "./compartido/dtos/registrar-usuario.dto.ts":
+/*!**************************************************!*\
+  !*** ./compartido/dtos/registrar-usuario.dto.ts ***!
+  \**************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.RegistrarUsuarioDto = void 0;
+const class_validator_1 = __webpack_require__(/*! class-validator */ "class-validator");
+const swagger_1 = __webpack_require__(/*! @nestjs/swagger */ "@nestjs/swagger");
+class RegistrarUsuarioDto {
+    nombre;
+    correo;
+    clave;
+}
+exports.RegistrarUsuarioDto = RegistrarUsuarioDto;
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Nombre completo del usuario',
+        example: 'Juan Pérez',
+    }),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], RegistrarUsuarioDto.prototype, "nombre", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Correo electrónico del usuario',
+        example: 'juan@ejemplo.com',
+    }),
+    (0, class_validator_1.IsEmail)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], RegistrarUsuarioDto.prototype, "correo", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Contraseña del usuario (mínimo 6 caracteres)',
+        example: '123456',
+        minLength: 6,
+    }),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.MinLength)(6, { message: 'La contraseña debe tener al menos 6 caracteres' }),
+    __metadata("design:type", String)
+], RegistrarUsuarioDto.prototype, "clave", void 0);
+
+
+/***/ }),
+
 /***/ "./servicios/catalogo/src/catalogo.module.ts":
 /*!***************************************************!*\
   !*** ./servicios/catalogo/src/catalogo.module.ts ***!
@@ -248,6 +308,8 @@ const config_1 = __webpack_require__(/*! @nestjs/config */ "@nestjs/config");
 const typeorm_1 = __webpack_require__(/*! @nestjs/typeorm */ "@nestjs/typeorm");
 const schedule_1 = __webpack_require__(/*! @nestjs/schedule */ "@nestjs/schedule");
 const productos_module_1 = __webpack_require__(/*! ./productos/productos.module */ "./servicios/catalogo/src/productos/productos.module.ts");
+const producto_entidad_1 = __webpack_require__(/*! ./productos/producto.entidad */ "./servicios/catalogo/src/productos/producto.entidad.ts");
+const reserva_entidad_1 = __webpack_require__(/*! ./productos/reserva.entidad */ "./servicios/catalogo/src/productos/reserva.entidad.ts");
 let ModuloCatalogo = class ModuloCatalogo {
 };
 exports.ModuloCatalogo = ModuloCatalogo;
@@ -268,9 +330,9 @@ exports.ModuloCatalogo = ModuloCatalogo = __decorate([
                     username: configuracion.get('BD_USUARIO', 'root'),
                     password: configuracion.get('BD_CLAVE', ''),
                     database: configuracion.get('BD_NOMBRE', 'productos_bd'),
-                    entities: [__dirname + '/**/*.entidad{.ts,.js}'],
+                    entities: [producto_entidad_1.Producto, reserva_entidad_1.Reserva],
                     synchronize: configuracion.get('BD_SINCRONIZAR', 'true') === 'true',
-                    logging: false,
+                    logging: true,
                 }),
             }),
             schedule_1.ScheduleModule.forRoot(),
@@ -282,76 +344,10 @@ exports.ModuloCatalogo = ModuloCatalogo = __decorate([
 
 /***/ }),
 
-/***/ "./servicios/catalogo/src/entidades/producto.entidad.ts":
+/***/ "./servicios/catalogo/src/productos/producto.entidad.ts":
 /*!**************************************************************!*\
-  !*** ./servicios/catalogo/src/entidades/producto.entidad.ts ***!
+  !*** ./servicios/catalogo/src/productos/producto.entidad.ts ***!
   \**************************************************************/
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var _a;
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Producto = void 0;
-const typeorm_1 = __webpack_require__(/*! typeorm */ "typeorm");
-const reserva_entidad_1 = __webpack_require__(/*! ./reserva.entidad */ "./servicios/catalogo/src/entidades/reserva.entidad.ts");
-let Producto = class Producto {
-    id;
-    nombre;
-    precio;
-    inventario;
-    inventarioReservado;
-    fechaCreacion;
-    reservas;
-};
-exports.Producto = Producto;
-__decorate([
-    (0, typeorm_1.PrimaryGeneratedColumn)(),
-    __metadata("design:type", Number)
-], Producto.prototype, "id", void 0);
-__decorate([
-    (0, typeorm_1.Column)({ length: 100 }),
-    __metadata("design:type", String)
-], Producto.prototype, "nombre", void 0);
-__decorate([
-    (0, typeorm_1.Column)('decimal', { precision: 10, scale: 2 }),
-    __metadata("design:type", Number)
-], Producto.prototype, "precio", void 0);
-__decorate([
-    (0, typeorm_1.Column)('int'),
-    __metadata("design:type", Number)
-], Producto.prototype, "inventario", void 0);
-__decorate([
-    (0, typeorm_1.Column)('int', { default: 0, name: 'inventario_reservado' }),
-    __metadata("design:type", Number)
-], Producto.prototype, "inventarioReservado", void 0);
-__decorate([
-    (0, typeorm_1.CreateDateColumn)({ name: 'fecha_creacion' }),
-    __metadata("design:type", typeof (_a = typeof Date !== "undefined" && Date) === "function" ? _a : Object)
-], Producto.prototype, "fechaCreacion", void 0);
-__decorate([
-    (0, typeorm_1.OneToMany)(() => reserva_entidad_1.Reserva, reserva => reserva.producto),
-    __metadata("design:type", Array)
-], Producto.prototype, "reservas", void 0);
-exports.Producto = Producto = __decorate([
-    (0, typeorm_1.Entity)('productos')
-], Producto);
-
-
-/***/ }),
-
-/***/ "./servicios/catalogo/src/entidades/reserva.entidad.ts":
-/*!*************************************************************!*\
-  !*** ./servicios/catalogo/src/entidades/reserva.entidad.ts ***!
-  \*************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -366,45 +362,55 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var _a, _b;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Reserva = void 0;
+exports.Producto = void 0;
 const typeorm_1 = __webpack_require__(/*! typeorm */ "typeorm");
-const producto_entidad_1 = __webpack_require__(/*! ./producto.entidad */ "./servicios/catalogo/src/entidades/producto.entidad.ts");
-let Reserva = class Reserva {
+const reserva_entidad_1 = __webpack_require__(/*! ./reserva.entidad */ "./servicios/catalogo/src/productos/reserva.entidad.ts");
+let Producto = class Producto {
     id;
-    idProducto;
-    producto;
-    idUsuario;
-    cantidad;
+    nombre;
+    precio;
+    inventario;
+    inventarioReservado;
     fechaCreacion;
+    fechaActualizacion;
+    reservas;
 };
-exports.Reserva = Reserva;
+exports.Producto = Producto;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
-], Reserva.prototype, "id", void 0);
+], Producto.prototype, "id", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ name: 'id_producto' }),
+    (0, typeorm_1.Column)({ type: 'varchar', length: 255 }),
+    __metadata("design:type", String)
+], Producto.prototype, "nombre", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 2 }),
     __metadata("design:type", Number)
-], Reserva.prototype, "idProducto", void 0);
+], Producto.prototype, "precio", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => producto_entidad_1.Producto, producto => producto.reservas),
-    __metadata("design:type", typeof (_a = typeof producto_entidad_1.Producto !== "undefined" && producto_entidad_1.Producto) === "function" ? _a : Object)
-], Reserva.prototype, "producto", void 0);
-__decorate([
-    (0, typeorm_1.Column)('int', { name: 'id_usuario' }),
+    (0, typeorm_1.Column)({ type: 'int', default: 0 }),
     __metadata("design:type", Number)
-], Reserva.prototype, "idUsuario", void 0);
+], Producto.prototype, "inventario", void 0);
 __decorate([
-    (0, typeorm_1.Column)('int'),
+    (0, typeorm_1.Column)({ type: 'int', default: 0, name: 'inventarioReservado' }),
     __metadata("design:type", Number)
-], Reserva.prototype, "cantidad", void 0);
+], Producto.prototype, "inventarioReservado", void 0);
 __decorate([
-    (0, typeorm_1.CreateDateColumn)({ name: 'fecha_creacion' }),
+    (0, typeorm_1.CreateDateColumn)({ name: 'fechaCreacion' }),
+    __metadata("design:type", typeof (_a = typeof Date !== "undefined" && Date) === "function" ? _a : Object)
+], Producto.prototype, "fechaCreacion", void 0);
+__decorate([
+    (0, typeorm_1.UpdateDateColumn)({ name: 'fechaActualizacion' }),
     __metadata("design:type", typeof (_b = typeof Date !== "undefined" && Date) === "function" ? _b : Object)
-], Reserva.prototype, "fechaCreacion", void 0);
-exports.Reserva = Reserva = __decorate([
-    (0, typeorm_1.Entity)('reservas_productos')
-], Reserva);
+], Producto.prototype, "fechaActualizacion", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => reserva_entidad_1.Reserva, (reserva) => reserva.producto),
+    __metadata("design:type", Array)
+], Producto.prototype, "reservas", void 0);
+exports.Producto = Producto = __decorate([
+    (0, typeorm_1.Entity)('productos')
+], Producto);
 
 
 /***/ }),
@@ -519,24 +525,21 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ModuloProductos = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const typeorm_1 = __webpack_require__(/*! @nestjs/typeorm */ "@nestjs/typeorm");
-const schedule_1 = __webpack_require__(/*! @nestjs/schedule */ "@nestjs/schedule");
 const productos_controller_1 = __webpack_require__(/*! ./productos.controller */ "./servicios/catalogo/src/productos/productos.controller.ts");
 const productos_service_1 = __webpack_require__(/*! ./productos.service */ "./servicios/catalogo/src/productos/productos.service.ts");
 const tareas_service_1 = __webpack_require__(/*! ./tareas.service */ "./servicios/catalogo/src/productos/tareas.service.ts");
-const producto_entidad_1 = __webpack_require__(/*! ../entidades/producto.entidad */ "./servicios/catalogo/src/entidades/producto.entidad.ts");
-const reserva_entidad_1 = __webpack_require__(/*! ../entidades/reserva.entidad */ "./servicios/catalogo/src/entidades/reserva.entidad.ts");
+const producto_entidad_1 = __webpack_require__(/*! ./producto.entidad */ "./servicios/catalogo/src/productos/producto.entidad.ts");
+const reserva_entidad_1 = __webpack_require__(/*! ./reserva.entidad */ "./servicios/catalogo/src/productos/reserva.entidad.ts");
 let ModuloProductos = class ModuloProductos {
 };
 exports.ModuloProductos = ModuloProductos;
 exports.ModuloProductos = ModuloProductos = __decorate([
     (0, common_1.Module)({
         imports: [
-            schedule_1.ScheduleModule.forRoot(),
-            typeorm_1.TypeOrmModule.forFeature([producto_entidad_1.Producto, reserva_entidad_1.Reserva]),
+            typeorm_1.TypeOrmModule.forFeature([producto_entidad_1.Producto, reserva_entidad_1.Reserva])
         ],
         controllers: [productos_controller_1.ControladorProductos],
         providers: [productos_service_1.ServicioProductos, tareas_service_1.ServicioTareas],
-        exports: [productos_service_1.ServicioProductos],
     })
 ], ModuloProductos);
 
@@ -562,110 +565,273 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+var ServicioProductos_1;
 var _a, _b, _c;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ServicioProductos = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const typeorm_1 = __webpack_require__(/*! @nestjs/typeorm */ "@nestjs/typeorm");
 const typeorm_2 = __webpack_require__(/*! typeorm */ "typeorm");
-const producto_entidad_1 = __webpack_require__(/*! ../entidades/producto.entidad */ "./servicios/catalogo/src/entidades/producto.entidad.ts");
-const reserva_entidad_1 = __webpack_require__(/*! ../entidades/reserva.entidad */ "./servicios/catalogo/src/entidades/reserva.entidad.ts");
-let ServicioProductos = class ServicioProductos {
+const producto_entidad_1 = __webpack_require__(/*! ./producto.entidad */ "./servicios/catalogo/src/productos/producto.entidad.ts");
+const reserva_entidad_1 = __webpack_require__(/*! ./reserva.entidad */ "./servicios/catalogo/src/productos/reserva.entidad.ts");
+let ServicioProductos = ServicioProductos_1 = class ServicioProductos {
     repositorioProductos;
     repositorioReservas;
-    fuenteDatos;
-    constructor(repositorioProductos, repositorioReservas, fuenteDatos) {
+    dataSource;
+    logger = new common_1.Logger(ServicioProductos_1.name);
+    constructor(repositorioProductos, repositorioReservas, dataSource) {
         this.repositorioProductos = repositorioProductos;
         this.repositorioReservas = repositorioReservas;
-        this.fuenteDatos = fuenteDatos;
+        this.dataSource = dataSource;
+    }
+    async obtenerTodos() {
+        return this.repositorioProductos.find({
+            order: { fechaCreacion: 'DESC' },
+        });
+    }
+    async obtenerPorId(id) {
+        const producto = await this.repositorioProductos.findOne({
+            where: { id },
+        });
+        if (!producto) {
+            throw new common_1.NotFoundException(`Producto con ID ${id} no encontrado`);
+        }
+        return producto;
+    }
+    async obtenerProductosPorIds(ids) {
+        if (!ids || ids.length === 0) {
+            return [];
+        }
+        return this.repositorioProductos.find({
+            where: { id: (0, typeorm_2.In)(ids) },
+        });
     }
     async crear(dto) {
-        const nuevoProducto = this.repositorioProductos.create({
+        const producto = this.repositorioProductos.create({
             nombre: dto.nombre,
             precio: dto.precio,
             inventario: dto.inventario,
+            inventarioReservado: 0,
         });
-        return this.repositorioProductos.save(nuevoProducto);
+        return this.repositorioProductos.save(producto);
     }
-    async obtenerTodos() {
-        return this.repositorioProductos.find();
-    }
-    async obtenerProductosPorIds(ids) {
-        return this.repositorioProductos.findBy({
-            id: (0, typeorm_2.In)(ids)
-        });
-    }
-    async crearReserva(dto) {
-        const ejecutorConsultas = this.fuenteDatos.createQueryRunner();
-        await ejecutorConsultas.connect();
-        await ejecutorConsultas.startTransaction();
-        try {
-            const { idProducto, idUsuario, cantidad } = dto;
-            const producto = await ejecutorConsultas.manager.findOne(producto_entidad_1.Producto, {
-                where: { id: idProducto }
+    async reservarProductos(dto) {
+        const { idProducto, cantidad, idUsuario } = dto;
+        return this.dataSource.transaction(async (manager) => {
+            const producto = await manager.findOne(producto_entidad_1.Producto, {
+                where: { id: idProducto },
+                lock: { mode: 'pessimistic_write' },
             });
             if (!producto) {
                 throw new common_1.NotFoundException(`Producto con ID ${idProducto} no encontrado`);
             }
             const stockDisponible = producto.inventario - producto.inventarioReservado;
             if (stockDisponible < cantidad) {
-                throw new common_1.BadRequestException(`Stock insuficiente. Disponible: ${stockDisponible}, Solicitado: ${cantidad}`);
+                throw new common_1.BadRequestException(`Stock insuficiente. Disponible: ${stockDisponible}, solicitado: ${cantidad}`);
             }
-            const nuevaReserva = ejecutorConsultas.manager.create(reserva_entidad_1.Reserva, {
+            producto.inventarioReservado += cantidad;
+            await manager.save(producto_entidad_1.Producto, producto);
+            const reserva = manager.create(reserva_entidad_1.Reserva, {
                 idProducto,
                 idUsuario,
                 cantidad,
             });
-            await ejecutorConsultas.manager.save(nuevaReserva);
-            await ejecutorConsultas.manager.increment(producto_entidad_1.Producto, { id: idProducto }, 'inventarioReservado', cantidad);
-            await ejecutorConsultas.commitTransaction();
-            return nuevaReserva;
-        }
-        catch (error) {
-            await ejecutorConsultas.rollbackTransaction();
-            if (error instanceof common_1.NotFoundException || error instanceof common_1.BadRequestException) {
-                throw error;
-            }
-            throw new common_1.InternalServerErrorException(`Error al crear reserva: ${error.message}`);
-        }
-        finally {
-            await ejecutorConsultas.release();
-        }
-    }
-    async cancelarReserva(idReserva) {
-        const reserva = await this.repositorioReservas.findOne({
-            where: { id: idReserva }
+            return manager.save(reserva_entidad_1.Reserva, reserva);
         });
-        if (!reserva) {
+    }
+    async crearReserva(dto) {
+        return this.reservarProductos(dto);
+    }
+    async procesarCompra(dto) {
+        const { articulos } = dto;
+        this.logger.log(`Procesando compra de ${articulos.length} artículos`);
+        return this.dataSource.transaction(async (manager) => {
+            for (const articulo of articulos) {
+                const producto = await manager.findOne(producto_entidad_1.Producto, {
+                    where: { id: articulo.idProducto },
+                    lock: { mode: 'pessimistic_write' },
+                });
+                if (!producto) {
+                    throw new common_1.NotFoundException(`Producto con ID ${articulo.idProducto} no encontrado`);
+                }
+                if (producto.inventarioReservado < articulo.cantidad) {
+                    throw new common_1.BadRequestException(`Inventario reservado insuficiente para producto ${producto.nombre}`);
+                }
+                producto.inventario -= articulo.cantidad;
+                producto.inventarioReservado -= articulo.cantidad;
+                if (producto.inventario < 0) {
+                    throw new common_1.BadRequestException(`Error de inventario para producto ${producto.nombre}`);
+                }
+                await manager.save(producto_entidad_1.Producto, producto);
+                this.logger.log(`Producto ${producto.nombre}: inventario actualizado a ${producto.inventario}`);
+            }
+        });
+    }
+    async liberarReservas(idsReservas) {
+        if (!idsReservas || idsReservas.length === 0) {
             return;
         }
-        const { idProducto, cantidad } = reserva;
-        await this.fuenteDatos.transaction(async (gestor) => {
-            await gestor.decrement(producto_entidad_1.Producto, { id: idProducto }, 'inventarioReservado', cantidad);
-            await gestor.delete(reserva_entidad_1.Reserva, idReserva);
+        return this.dataSource.transaction(async (manager) => {
+            const reservas = await manager.find(reserva_entidad_1.Reserva, {
+                where: { id: (0, typeorm_2.In)(idsReservas) },
+            });
+            for (const reserva of reservas) {
+                const producto = await manager.findOne(producto_entidad_1.Producto, {
+                    where: { id: reserva.idProducto },
+                    lock: { mode: 'pessimistic_write' },
+                });
+                if (producto) {
+                    producto.inventarioReservado -= reserva.cantidad;
+                    if (producto.inventarioReservado < 0) {
+                        producto.inventarioReservado = 0;
+                    }
+                    await manager.save(producto_entidad_1.Producto, producto);
+                }
+                await manager.remove(reserva_entidad_1.Reserva, reserva);
+            }
         });
     }
-    async confirmarCompra(articulos) {
-        return this.fuenteDatos.transaction(async (gestor) => {
-            const resultados = [];
-            for (const articulo of articulos) {
-                const resultado = await gestor.update(producto_entidad_1.Producto, { id: articulo.idProducto }, {
-                    inventario: () => `inventario - ${articulo.cantidad}`,
-                    inventarioReservado: () => `inventarioReservado - ${articulo.cantidad}`,
-                });
-                resultados.push(resultado);
+    async verificarDisponibilidad(productos) {
+        for (const item of productos) {
+            const producto = await this.repositorioProductos.findOne({
+                where: { id: item.idProducto },
+            });
+            if (!producto) {
+                return {
+                    disponible: false,
+                    mensaje: `Producto con ID ${item.idProducto} no encontrado`,
+                };
             }
-            return resultados;
+            const stockDisponible = producto.inventario - producto.inventarioReservado;
+            if (stockDisponible < item.cantidad) {
+                return {
+                    disponible: false,
+                    mensaje: `Stock insuficiente para ${producto.nombre}. Disponible: ${stockDisponible}`,
+                };
+            }
+        }
+        return { disponible: true };
+    }
+    async actualizar(id, datos) {
+        const producto = await this.obtenerPorId(id);
+        Object.assign(producto, datos);
+        return this.repositorioProductos.save(producto);
+    }
+    async eliminar(id) {
+        const producto = await this.obtenerPorId(id);
+        if (producto.inventarioReservado > 0) {
+            throw new common_1.BadRequestException('No se puede eliminar un producto con inventario reservado');
+        }
+        await this.repositorioProductos.remove(producto);
+    }
+    async obtenerEstadisticas() {
+        const productos = await this.repositorioProductos.find();
+        const totalProductos = productos.length;
+        const inventarioTotal = productos.reduce((sum, p) => sum + p.inventario, 0);
+        const inventarioReservado = productos.reduce((sum, p) => sum + p.inventarioReservado, 0);
+        const valorInventario = productos.reduce((sum, p) => sum + p.precio * p.inventario, 0);
+        return {
+            totalProductos,
+            inventarioTotal,
+            inventarioReservado,
+            inventarioDisponible: inventarioTotal - inventarioReservado,
+            valorInventario: parseFloat(valorInventario.toFixed(2)),
+            productosSinStock: productos.filter((p) => p.inventario === 0).length,
+        };
+    }
+    async confirmarCompra(articulos) {
+        this.logger.log(`✅ Confirmando compra de ${articulos.length} artículos`);
+        return this.dataSource.transaction(async (manager) => {
+            for (const articulo of articulos) {
+                const producto = await manager.findOne(producto_entidad_1.Producto, {
+                    where: { id: articulo.idProducto },
+                    lock: { mode: 'pessimistic_write' },
+                });
+                if (!producto) {
+                    throw new common_1.NotFoundException(`Producto con ID ${articulo.idProducto} no encontrado`);
+                }
+                if (producto.inventario < articulo.cantidad) {
+                    throw new common_1.BadRequestException(`Stock insuficiente para ${producto.nombre}. Disponible: ${producto.inventario}`);
+                }
+                producto.inventario -= articulo.cantidad;
+                await manager.save(producto_entidad_1.Producto, producto);
+                this.logger.log(`✅ Producto ${producto.nombre}: inventario actualizado a ${producto.inventario}`);
+            }
         });
+    }
+    async cancelarReserva(idReserva) {
+        return this.liberarReservas([idReserva]);
     }
 };
 exports.ServicioProductos = ServicioProductos;
-exports.ServicioProductos = ServicioProductos = __decorate([
+exports.ServicioProductos = ServicioProductos = ServicioProductos_1 = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(producto_entidad_1.Producto)),
     __param(1, (0, typeorm_1.InjectRepository)(reserva_entidad_1.Reserva)),
     __metadata("design:paramtypes", [typeof (_a = typeof typeorm_2.Repository !== "undefined" && typeorm_2.Repository) === "function" ? _a : Object, typeof (_b = typeof typeorm_2.Repository !== "undefined" && typeorm_2.Repository) === "function" ? _b : Object, typeof (_c = typeof typeorm_2.DataSource !== "undefined" && typeorm_2.DataSource) === "function" ? _c : Object])
 ], ServicioProductos);
+
+
+/***/ }),
+
+/***/ "./servicios/catalogo/src/productos/reserva.entidad.ts":
+/*!*************************************************************!*\
+  !*** ./servicios/catalogo/src/productos/reserva.entidad.ts ***!
+  \*************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var _a, _b;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Reserva = void 0;
+const typeorm_1 = __webpack_require__(/*! typeorm */ "typeorm");
+const producto_entidad_1 = __webpack_require__(/*! ./producto.entidad */ "./servicios/catalogo/src/productos/producto.entidad.ts");
+let Reserva = class Reserva {
+    id;
+    idProducto;
+    idUsuario;
+    cantidad;
+    fechaCreacion;
+    producto;
+};
+exports.Reserva = Reserva;
+__decorate([
+    (0, typeorm_1.PrimaryGeneratedColumn)(),
+    __metadata("design:type", Number)
+], Reserva.prototype, "id", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'int', name: 'idProducto' }),
+    __metadata("design:type", Number)
+], Reserva.prototype, "idProducto", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'int', name: 'idUsuario' }),
+    __metadata("design:type", Number)
+], Reserva.prototype, "idUsuario", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'int' }),
+    __metadata("design:type", Number)
+], Reserva.prototype, "cantidad", void 0);
+__decorate([
+    (0, typeorm_1.CreateDateColumn)({ name: 'fechaCreacion' }),
+    __metadata("design:type", typeof (_a = typeof Date !== "undefined" && Date) === "function" ? _a : Object)
+], Reserva.prototype, "fechaCreacion", void 0);
+__decorate([
+    (0, typeorm_1.ManyToOne)(() => producto_entidad_1.Producto, (producto) => producto.reservas, { onDelete: 'CASCADE' }),
+    (0, typeorm_1.JoinColumn)({ name: 'idProducto' }),
+    __metadata("design:type", typeof (_b = typeof producto_entidad_1.Producto !== "undefined" && producto_entidad_1.Producto) === "function" ? _b : Object)
+], Reserva.prototype, "producto", void 0);
+exports.Reserva = Reserva = __decorate([
+    (0, typeorm_1.Entity)('reservas')
+], Reserva);
 
 
 /***/ }),
@@ -697,46 +863,109 @@ const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const schedule_1 = __webpack_require__(/*! @nestjs/schedule */ "@nestjs/schedule");
 const typeorm_1 = __webpack_require__(/*! @nestjs/typeorm */ "@nestjs/typeorm");
 const typeorm_2 = __webpack_require__(/*! typeorm */ "typeorm");
-const reserva_entidad_1 = __webpack_require__(/*! ../entidades/reserva.entidad */ "./servicios/catalogo/src/entidades/reserva.entidad.ts");
-const producto_entidad_1 = __webpack_require__(/*! ../entidades/producto.entidad */ "./servicios/catalogo/src/entidades/producto.entidad.ts");
+const reserva_entidad_1 = __webpack_require__(/*! ./reserva.entidad */ "./servicios/catalogo/src/productos/reserva.entidad.ts");
+const producto_entidad_1 = __webpack_require__(/*! ./producto.entidad */ "./servicios/catalogo/src/productos/producto.entidad.ts");
 let ServicioTareas = ServicioTareas_1 = class ServicioTareas {
-    repoReservas;
-    repoProductos;
-    fuenteDatos;
-    registrador = new common_1.Logger(ServicioTareas_1.name);
-    constructor(repoReservas, repoProductos, fuenteDatos) {
-        this.repoReservas = repoReservas;
-        this.repoProductos = repoProductos;
-        this.fuenteDatos = fuenteDatos;
+    repositorioReservas;
+    repositorioProductos;
+    dataSource;
+    logger = new common_1.Logger(ServicioTareas_1.name);
+    TIEMPO_EXPIRACION_MINUTOS = 30;
+    constructor(repositorioReservas, repositorioProductos, dataSource) {
+        this.repositorioReservas = repositorioReservas;
+        this.repositorioProductos = repositorioProductos;
+        this.dataSource = dataSource;
     }
     async limpiarReservasExpiradas() {
-        this.registrador.log('🧹 Buscando reservas expiradas...');
-        const haceTresDias = new Date();
-        haceTresDias.setDate(haceTresDias.getDate() - 3);
-        const reservasExpiradas = await this.repoReservas.find({
-            where: {
-                fechaCreacion: (0, typeorm_2.LessThan)(haceTresDias)
+        this.logger.log('Iniciando limpieza de reservas expiradas...');
+        try {
+            const fechaExpiracion = new Date();
+            fechaExpiracion.setMinutes(fechaExpiracion.getMinutes() - this.TIEMPO_EXPIRACION_MINUTOS);
+            const reservasExpiradas = await this.repositorioReservas.find({
+                where: {
+                    fechaCreacion: (0, typeorm_2.LessThan)(fechaExpiracion),
+                },
+            });
+            if (reservasExpiradas.length === 0) {
+                this.logger.log('No hay reservas expiradas para limpiar');
+                return;
             }
+            this.logger.log(`Encontradas ${reservasExpiradas.length} reservas expiradas`);
+            await this.dataSource.transaction(async (manager) => {
+                for (const reserva of reservasExpiradas) {
+                    const producto = await manager.findOne(producto_entidad_1.Producto, {
+                        where: { id: reserva.idProducto },
+                        lock: { mode: 'pessimistic_write' },
+                    });
+                    if (producto) {
+                        producto.inventarioReservado -= reserva.cantidad;
+                        if (producto.inventarioReservado < 0) {
+                            this.logger.warn(`Inventario reservado negativo detectado para producto ${producto.id}. Ajustando a 0.`);
+                            producto.inventarioReservado = 0;
+                        }
+                        await manager.save(producto_entidad_1.Producto, producto);
+                        this.logger.debug(`Liberado inventario para producto ${producto.nombre}: ${reserva.cantidad} unidades`);
+                    }
+                    await manager.remove(reserva_entidad_1.Reserva, reserva);
+                }
+            });
+            this.logger.log(`Limpieza completada: ${reservasExpiradas.length} reservas eliminadas`);
+        }
+        catch (error) {
+            this.logger.error('Error al limpiar reservas expiradas:', error);
+            throw error;
+        }
+    }
+    async limpiarReservasManual() {
+        this.logger.log('Ejecutando limpieza manual de reservas...');
+        const fechaExpiracion = new Date();
+        fechaExpiracion.setMinutes(fechaExpiracion.getMinutes() - this.TIEMPO_EXPIRACION_MINUTOS);
+        const reservasExpiradas = await this.repositorioReservas.find({
+            where: {
+                fechaCreacion: (0, typeorm_2.LessThan)(fechaExpiracion),
+            },
         });
         if (reservasExpiradas.length === 0) {
-            this.registrador.log('✅ No hay reservas expiradas');
-            return;
+            return 0;
         }
-        this.registrador.warn(`🔄 Liberando ${reservasExpiradas.length} reservas expiradas`);
-        await this.fuenteDatos.transaction(async (gestor) => {
+        await this.dataSource.transaction(async (manager) => {
             for (const reserva of reservasExpiradas) {
-                const { idProducto, cantidad } = reserva;
-                await gestor.decrement(producto_entidad_1.Producto, { id: idProducto }, 'inventarioReservado', cantidad);
-                await gestor.increment(producto_entidad_1.Producto, { id: idProducto }, 'inventario', cantidad);
-                await gestor.delete(reserva_entidad_1.Reserva, reserva.id);
+                const producto = await manager.findOne(producto_entidad_1.Producto, {
+                    where: { id: reserva.idProducto },
+                    lock: { mode: 'pessimistic_write' },
+                });
+                if (producto) {
+                    producto.inventarioReservado -= reserva.cantidad;
+                    if (producto.inventarioReservado < 0) {
+                        producto.inventarioReservado = 0;
+                    }
+                    await manager.save(producto_entidad_1.Producto, producto);
+                }
+                await manager.remove(reserva_entidad_1.Reserva, reserva);
             }
         });
-        this.registrador.log('✅ Limpieza completada');
+        return reservasExpiradas.length;
+    }
+    async obtenerEstadisticasReservas() {
+        const totalReservas = await this.repositorioReservas.count();
+        const fechaExpiracion = new Date();
+        fechaExpiracion.setMinutes(fechaExpiracion.getMinutes() - this.TIEMPO_EXPIRACION_MINUTOS);
+        const reservasExpiradas = await this.repositorioReservas.count({
+            where: {
+                fechaCreacion: (0, typeorm_2.LessThan)(fechaExpiracion),
+            },
+        });
+        return {
+            totalReservas,
+            reservasActivas: totalReservas - reservasExpiradas,
+            reservasExpiradas,
+            tiempoExpiracionMinutos: this.TIEMPO_EXPIRACION_MINUTOS,
+        };
     }
 };
 exports.ServicioTareas = ServicioTareas;
 __decorate([
-    (0, schedule_1.Cron)(schedule_1.CronExpression.EVERY_6_HOURS),
+    (0, schedule_1.Cron)(schedule_1.CronExpression.EVERY_HOUR),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)

@@ -87,6 +87,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 __exportStar(__webpack_require__(/*! ./iniciar-sesion.dto */ "./compartido/dtos/iniciar-sesion.dto.ts"), exports);
+__exportStar(__webpack_require__(/*! ./registrar-usuario.dto */ "./compartido/dtos/registrar-usuario.dto.ts"), exports);
 __exportStar(__webpack_require__(/*! ./producto.dto */ "./compartido/dtos/producto.dto.ts"), exports);
 __exportStar(__webpack_require__(/*! ./compra.dto */ "./compartido/dtos/compra.dto.ts"), exports);
 
@@ -228,6 +229,65 @@ __decorate([
 
 /***/ }),
 
+/***/ "./compartido/dtos/registrar-usuario.dto.ts":
+/*!**************************************************!*\
+  !*** ./compartido/dtos/registrar-usuario.dto.ts ***!
+  \**************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.RegistrarUsuarioDto = void 0;
+const class_validator_1 = __webpack_require__(/*! class-validator */ "class-validator");
+const swagger_1 = __webpack_require__(/*! @nestjs/swagger */ "@nestjs/swagger");
+class RegistrarUsuarioDto {
+    nombre;
+    correo;
+    clave;
+}
+exports.RegistrarUsuarioDto = RegistrarUsuarioDto;
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Nombre completo del usuario',
+        example: 'Juan Pérez',
+    }),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], RegistrarUsuarioDto.prototype, "nombre", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Correo electrónico del usuario',
+        example: 'juan@ejemplo.com',
+    }),
+    (0, class_validator_1.IsEmail)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], RegistrarUsuarioDto.prototype, "correo", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Contraseña del usuario (mínimo 6 caracteres)',
+        example: '123456',
+        minLength: 6,
+    }),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.MinLength)(6, { message: 'La contraseña debe tener al menos 6 caracteres' }),
+    __metadata("design:type", String)
+], RegistrarUsuarioDto.prototype, "clave", void 0);
+
+
+/***/ }),
+
 /***/ "./servicios/puerta-enlace/src/acceso/acceso.controller.ts":
 /*!*****************************************************************!*\
   !*** ./servicios/puerta-enlace/src/acceso/acceso.controller.ts ***!
@@ -247,7 +307,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-var _a, _b;
+var _a, _b, _c;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ControladorAcceso = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
@@ -259,31 +319,83 @@ let ControladorAcceso = class ControladorAcceso {
     constructor(servicioAcceso) {
         this.servicioAcceso = servicioAcceso;
     }
-    async iniciarSesion(datos) {
-        const usuario = await this.servicioAcceso.validarUsuario(datos);
-        return this.servicioAcceso.generarToken(usuario);
+    async iniciarSesion(dto) {
+        const resultado = await this.servicioAcceso.iniciarSesion(dto);
+        return {
+            token: resultado.tokenAcceso,
+            usuario: resultado.usuario,
+        };
+    }
+    async registrarse(dto) {
+        const usuario = await this.servicioAcceso.registrarUsuario(dto);
+        return {
+            mensaje: 'Usuario registrado exitosamente',
+            usuario: {
+                id: usuario.id,
+                correo: usuario.correo,
+                nombre: usuario.nombre,
+                rol: usuario.rol,
+            },
+        };
     }
 };
 exports.ControladorAcceso = ControladorAcceso;
 __decorate([
     (0, common_1.Post)('iniciar-sesion'),
-    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
-    (0, swagger_1.ApiOperation)({ summary: 'Iniciar sesión en el sistema' }),
+    (0, swagger_1.ApiOperation)({
+        summary: 'Iniciar sesión en el sistema',
+        description: 'Autentica un usuario con correo y contraseña, devuelve un token JWT'
+    }),
     (0, swagger_1.ApiResponse)({
         status: 200,
-        description: 'Inicio de sesión exitoso. Retorna token JWT.'
+        description: 'Login exitoso',
+        schema: {
+            example: {
+                token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+                usuario: {
+                    id: 1,
+                    correo: 'admin@tienda.com',
+                    nombre: 'Administrador',
+                    rol: 'ADMIN'
+                }
+            }
+        }
     }),
-    (0, swagger_1.ApiResponse)({
-        status: 401,
-        description: 'Credenciales inválidas.'
-    }),
+    (0, swagger_1.ApiResponse)({ status: 401, description: 'Credenciales incorrectas' }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [typeof (_b = typeof dtos_1.IniciarSesionDto !== "undefined" && dtos_1.IniciarSesionDto) === "function" ? _b : Object]),
     __metadata("design:returntype", Promise)
 ], ControladorAcceso.prototype, "iniciarSesion", null);
+__decorate([
+    (0, common_1.Post)('registrarse'),
+    (0, swagger_1.ApiOperation)({
+        summary: 'Registrar un nuevo usuario',
+        description: 'Crea una cuenta nueva de usuario en el sistema'
+    }),
+    (0, swagger_1.ApiResponse)({
+        status: 201,
+        description: 'Usuario creado exitosamente',
+        schema: {
+            example: {
+                mensaje: 'Usuario registrado exitosamente',
+                usuario: {
+                    id: 3,
+                    correo: 'nuevo@tienda.com',
+                    nombre: 'Nuevo Usuario',
+                    rol: 'USUARIO'
+                }
+            }
+        }
+    }),
+    (0, swagger_1.ApiResponse)({ status: 409, description: 'El correo ya está registrado' }),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [typeof (_c = typeof dtos_1.RegistrarUsuarioDto !== "undefined" && dtos_1.RegistrarUsuarioDto) === "function" ? _c : Object]),
+    __metadata("design:returntype", Promise)
+], ControladorAcceso.prototype, "registrarse", null);
 exports.ControladorAcceso = ControladorAcceso = __decorate([
-    (0, swagger_1.ApiTags)('Autenticación'),
+    (0, swagger_1.ApiTags)('🔐 Autenticación'),
     (0, common_1.Controller)('acceso'),
     __metadata("design:paramtypes", [typeof (_a = typeof acceso_service_1.ServicioAcceso !== "undefined" && acceso_service_1.ServicioAcceso) === "function" ? _a : Object])
 ], ControladorAcceso);
@@ -369,52 +481,47 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-var _a, _b;
+var _a;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ServicioAcceso = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const microservices_1 = __webpack_require__(/*! @nestjs/microservices */ "@nestjs/microservices");
-const jwt_1 = __webpack_require__(/*! @nestjs/jwt */ "@nestjs/jwt");
 const rxjs_1 = __webpack_require__(/*! rxjs */ "rxjs");
 let ServicioAcceso = class ServicioAcceso {
     clienteAutenticacion;
-    servicioJwt;
-    constructor(clienteAutenticacion, servicioJwt) {
+    constructor(clienteAutenticacion) {
         this.clienteAutenticacion = clienteAutenticacion;
-        this.servicioJwt = servicioJwt;
     }
-    async validarUsuario(datos) {
-        const usuario = await (0, rxjs_1.firstValueFrom)(this.clienteAutenticacion.send({ cmd: 'validar_usuario' }, datos)).catch((error) => {
-            console.error('Error al contactar servicio de autenticación:', error);
-            throw new common_1.UnauthorizedException('Error al validar credenciales. Intenta nuevamente.');
-        });
-        if (!usuario) {
-            throw new common_1.UnauthorizedException('Correo o contraseña incorrectos');
+    async iniciarSesion(dto) {
+        try {
+            const resultado = await (0, rxjs_1.firstValueFrom)(this.clienteAutenticacion.send({ cmd: 'iniciar-sesion' }, { correo: dto.correo, clave: dto.clave }));
+            return resultado;
         }
-        return usuario;
+        catch (error) {
+            console.error('Error en iniciar sesión:', error);
+            throw error;
+        }
     }
-    async generarToken(usuario) {
-        const cargaUtil = {
-            sub: usuario.id,
-            correo: usuario.correo,
-            rol: usuario.rol
-        };
-        return {
-            tokenAcceso: this.servicioJwt.sign(cargaUtil),
-            usuario: {
-                id: usuario.id,
-                correo: usuario.correo,
-                nombre: usuario.nombre,
-                rol: usuario.rol
-            }
-        };
+    async registrarUsuario(dto) {
+        try {
+            const usuario = await (0, rxjs_1.firstValueFrom)(this.clienteAutenticacion.send({ cmd: 'registrar-usuario' }, {
+                nombre: dto.nombre,
+                correo: dto.correo,
+                clave: dto.clave,
+            }));
+            return usuario;
+        }
+        catch (error) {
+            console.error('Error en registro de usuario:', error);
+            throw error;
+        }
     }
 };
 exports.ServicioAcceso = ServicioAcceso;
 exports.ServicioAcceso = ServicioAcceso = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, common_1.Inject)('SERVICIO_AUTENTICACION')),
-    __metadata("design:paramtypes", [typeof (_a = typeof microservices_1.ClientProxy !== "undefined" && microservices_1.ClientProxy) === "function" ? _a : Object, typeof (_b = typeof jwt_1.JwtService !== "undefined" && jwt_1.JwtService) === "function" ? _b : Object])
+    __metadata("design:paramtypes", [typeof (_a = typeof microservices_1.ClientProxy !== "undefined" && microservices_1.ClientProxy) === "function" ? _a : Object])
 ], ServicioAcceso);
 
 
@@ -482,15 +589,59 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var _a, _b;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.GuardiaJwt = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
-const passport_1 = __webpack_require__(/*! @nestjs/passport */ "@nestjs/passport");
-let GuardiaJwt = class GuardiaJwt extends (0, passport_1.AuthGuard)('jwt') {
+const jwt_1 = __webpack_require__(/*! @nestjs/jwt */ "@nestjs/jwt");
+const config_1 = __webpack_require__(/*! @nestjs/config */ "@nestjs/config");
+let GuardiaJwt = class GuardiaJwt {
+    jwtService;
+    configService;
+    constructor(jwtService, configService) {
+        this.jwtService = jwtService;
+        this.configService = configService;
+    }
+    async canActivate(context) {
+        const request = context.switchToHttp().getRequest();
+        const token = this.extraerToken(request);
+        if (!token) {
+            throw new common_1.UnauthorizedException('Token no proporcionado');
+        }
+        try {
+            const secret = this.configService.get('SECRETO_JWT') || 'clave-super-secreta-cambiar-en-produccion';
+            const payload = this.jwtService.verify(token, { secret });
+            request.user = {
+                id: payload.id,
+                idUsuario: payload.id,
+                correo: payload.correo,
+                nombre: payload.nombre,
+                rol: payload.rol,
+            };
+            console.log('✅ Usuario autenticado:', request.user);
+            return true;
+        }
+        catch (error) {
+            console.error('❌ Error al verificar token:', error.message);
+            throw new common_1.UnauthorizedException('Token inválido o expirado');
+        }
+    }
+    extraerToken(request) {
+        const authHeader = request.headers?.authorization;
+        if (!authHeader) {
+            return null;
+        }
+        const [type, token] = authHeader.split(' ');
+        return type === 'Bearer' ? token : null;
+    }
 };
 exports.GuardiaJwt = GuardiaJwt;
 exports.GuardiaJwt = GuardiaJwt = __decorate([
-    (0, common_1.Injectable)()
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [typeof (_a = typeof jwt_1.JwtService !== "undefined" && jwt_1.JwtService) === "function" ? _a : Object, typeof (_b = typeof config_1.ConfigService !== "undefined" && config_1.ConfigService) === "function" ? _b : Object])
 ], GuardiaJwt);
 
 
@@ -553,20 +704,36 @@ let ControladorCarrito = class ControladorCarrito {
         }
     }
     async finalizarCompra(body, solicitud) {
-        const { idUsuario } = solicitud.user;
-        const total = body.articulos.reduce((suma, art) => suma + (art.precio * art.cantidad), 0);
+        const idUsuario = solicitud.user.id || solicitud.user.idUsuario;
+        console.log('🛒 Usuario finalizando compra:', idUsuario);
+        console.log('📦 Artículos recibidos:', body.articulos);
+        const montoTotal = body.articulos.reduce((suma, art) => suma + (art.precio * art.cantidad), 0);
         const datosPedido = {
-            idUsuario,
-            total,
-            articulos: body.articulos,
-        };
-        const nuevoPedido = await (0, rxjs_1.firstValueFrom)(this.clientePedidos.send({ cmd: 'crear_pedido' }, datosPedido));
-        await (0, rxjs_1.firstValueFrom)(this.clienteCatalogo.send({ cmd: 'confirmar_compra' }, {
+            idUsuario: idUsuario,
+            montoTotal: montoTotal,
             articulos: body.articulos.map(art => ({
                 idProducto: art.idProducto,
-                cantidad: art.cantidad
-            }))
-        }));
+                nombreProducto: art.nombreProducto,
+                cantidad: art.cantidad,
+                precioAlMomentoCompra: art.precio,
+            })),
+        };
+        console.log('📋 Enviando pedido a crear:', datosPedido);
+        const nuevoPedido = await (0, rxjs_1.firstValueFrom)(this.clientePedidos.send({ cmd: 'crear_pedido' }, datosPedido));
+        console.log('✅ Pedido creado:', nuevoPedido);
+        try {
+            await (0, rxjs_1.firstValueFrom)(this.clienteCatalogo.send({ cmd: 'confirmar_compra' }, {
+                articulos: body.articulos.map(art => ({
+                    idProducto: art.idProducto,
+                    cantidad: art.cantidad
+                }))
+            }).pipe((0, rxjs_1.timeout)(5000))).catch(() => {
+                console.log('⚠️ Catálogo no respondió, pero el pedido se creó');
+            });
+        }
+        catch (error) {
+            console.log('⚠️ Error al actualizar catálogo:', error.message);
+        }
         return {
             mensaje: 'Compra completada exitosamente',
             pedido: nuevoPedido
@@ -635,8 +802,8 @@ exports.ControladorPedidos = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const microservices_1 = __webpack_require__(/*! @nestjs/microservices */ "@nestjs/microservices");
 const swagger_1 = __webpack_require__(/*! @nestjs/swagger */ "@nestjs/swagger");
-const rxjs_1 = __webpack_require__(/*! rxjs */ "rxjs");
 const jwt_guardia_1 = __webpack_require__(/*! ../acceso/jwt.guardia */ "./servicios/puerta-enlace/src/acceso/jwt.guardia.ts");
+const rxjs_1 = __webpack_require__(/*! rxjs */ "rxjs");
 let ControladorPedidos = class ControladorPedidos {
     clientePedidos;
     clienteAutenticacion;
@@ -644,42 +811,69 @@ let ControladorPedidos = class ControladorPedidos {
         this.clientePedidos = clientePedidos;
         this.clienteAutenticacion = clienteAutenticacion;
     }
-    async obtenerTodosPedidos(solicitud) {
-        if (solicitud.user.rol !== 'ADMIN') {
-            throw new common_1.UnauthorizedException('Acceso denegado. Se requiere rol de Administrador.');
+    async obtenerPedidos(req) {
+        try {
+            const usuario = req.user;
+            console.log('Usuario solicitando pedidos:', {
+                id: usuario.id,
+                correo: usuario.correo,
+                rol: usuario.rol
+            });
+            const pedidos = await (0, rxjs_1.firstValueFrom)(this.clientePedidos.send({ cmd: 'obtener-pedidos' }, {}));
+            console.log(`Total de pedidos en sistema: ${pedidos.length}`);
+            if (usuario.rol === 'ADMIN') {
+                console.log('Usuario es ADMIN - devolviendo todos los pedidos');
+                const pedidosConUsuarios = await Promise.all(pedidos.map(async (pedido) => {
+                    try {
+                        const usuarioPedido = await (0, rxjs_1.firstValueFrom)(this.clienteAutenticacion.send({ cmd: 'obtener-usuario-por-id' }, { id: pedido.idUsuario }));
+                        return {
+                            ...pedido,
+                            usuario: {
+                                id: usuarioPedido.id,
+                                nombre: usuarioPedido.nombre,
+                                correo: usuarioPedido.correo,
+                            },
+                        };
+                    }
+                    catch (error) {
+                        console.error(`Error al obtener usuario ${pedido.idUsuario}:`, error);
+                        return {
+                            ...pedido,
+                            usuario: null,
+                        };
+                    }
+                }));
+                return pedidosConUsuarios;
+            }
+            console.log(`Usuario normal (ID: ${usuario.id}) - filtrando sus pedidos`);
+            const pedidosUsuario = pedidos.filter((pedido) => String(pedido.idUsuario) === String(usuario.id));
+            console.log(`Pedidos del usuario ${usuario.id}: ${pedidosUsuario.length}`);
+            return pedidosUsuario;
         }
-        const pedidos = await (0, rxjs_1.firstValueFrom)(this.clientePedidos.send({ cmd: 'obtener_todos_pedidos' }, {}));
-        const idsUsuarios = [...new Set(pedidos.map((p) => p.idUsuario))];
-        const mapaUsuarios = await (0, rxjs_1.firstValueFrom)(this.clienteAutenticacion.send({ cmd: 'obtener_usuarios_por_ids' }, idsUsuarios));
-        return pedidos.map((pedido) => {
-            const usuario = mapaUsuarios[pedido.idUsuario];
-            return {
-                ...pedido,
-                usuario: usuario || {
-                    nombre: 'Desconocido',
-                    correo: 'N/A',
-                    rol: 'N/A'
-                }
-            };
-        });
+        catch (error) {
+            console.error('Error al obtener pedidos:', error);
+            throw error;
+        }
     }
 };
 exports.ControladorPedidos = ControladorPedidos;
 __decorate([
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, common_1.UseGuards)(jwt_guardia_1.GuardiaJwt),
     (0, common_1.Get)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Obtener todos los pedidos (Solo ADMIN)' }),
-    (0, swagger_1.ApiResponse)({ status: 200, description: 'Lista de pedidos con información de usuarios' }),
+    (0, swagger_1.ApiOperation)({
+        summary: 'Obtener pedidos',
+        description: 'Admin ve todos los pedidos, Usuario ve solo los suyos'
+    }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Lista de pedidos' }),
     (0, swagger_1.ApiResponse)({ status: 401, description: 'No autorizado' }),
-    (0, swagger_1.ApiResponse)({ status: 403, description: 'Prohibido - Requiere rol ADMIN' }),
-    __param(0, (0, common_1.Req)()),
+    __param(0, (0, common_1.Request)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
-], ControladorPedidos.prototype, "obtenerTodosPedidos", null);
+], ControladorPedidos.prototype, "obtenerPedidos", null);
 exports.ControladorPedidos = ControladorPedidos = __decorate([
-    (0, swagger_1.ApiTags)('Pedidos'),
+    (0, swagger_1.ApiTags)('🧾 Pedidos'),
+    (0, swagger_1.ApiBearerAuth)('JWT-auth'),
+    (0, common_1.UseGuards)(jwt_guardia_1.GuardiaJwt),
     (0, common_1.Controller)('pedidos'),
     __param(0, (0, common_1.Inject)('SERVICIO_PEDIDOS')),
     __param(1, (0, common_1.Inject)('SERVICIO_AUTENTICACION')),
@@ -765,6 +959,229 @@ exports.ControladorProductos = ControladorProductos = __decorate([
 
 /***/ }),
 
+/***/ "./servicios/puerta-enlace/src/controladores/usuario.controller.ts":
+/*!*************************************************************************!*\
+  !*** ./servicios/puerta-enlace/src/controladores/usuario.controller.ts ***!
+  \*************************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var _a;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ControladorUsuarios = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const swagger_1 = __webpack_require__(/*! @nestjs/swagger */ "@nestjs/swagger");
+const jwt_guardia_1 = __webpack_require__(/*! ../acceso/jwt.guardia */ "./servicios/puerta-enlace/src/acceso/jwt.guardia.ts");
+const usuarios_service_1 = __webpack_require__(/*! ./usuarios.service */ "./servicios/puerta-enlace/src/controladores/usuarios.service.ts");
+let ControladorUsuarios = class ControladorUsuarios {
+    servicioUsuarios;
+    constructor(servicioUsuarios) {
+        this.servicioUsuarios = servicioUsuarios;
+    }
+    async obtenerPerfil(req) {
+        const usuario = req.user;
+        return this.servicioUsuarios.obtenerPorId(usuario.id);
+    }
+    async actualizarPerfil(req, datos) {
+        const usuario = req.user;
+        return this.servicioUsuarios.actualizarPerfil(usuario.id, datos);
+    }
+    async cambiarClave(req, datos) {
+        const usuario = req.user;
+        await this.servicioUsuarios.cambiarClave(usuario.id, datos.claveActual, datos.claveNueva);
+        return {
+            mensaje: 'Contraseña actualizada exitosamente',
+        };
+    }
+};
+exports.ControladorUsuarios = ControladorUsuarios;
+__decorate([
+    (0, common_1.Get)('perfil'),
+    (0, swagger_1.ApiOperation)({ summary: 'Obtener perfil del usuario autenticado' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Perfil del usuario' }),
+    __param(0, (0, common_1.Request)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], ControladorUsuarios.prototype, "obtenerPerfil", null);
+__decorate([
+    (0, common_1.Put)('perfil'),
+    (0, swagger_1.ApiOperation)({ summary: 'Actualizar perfil del usuario' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Perfil actualizado' }),
+    __param(0, (0, common_1.Request)()),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], ControladorUsuarios.prototype, "actualizarPerfil", null);
+__decorate([
+    (0, common_1.Put)('cambiar-clave'),
+    (0, swagger_1.ApiOperation)({ summary: 'Cambiar contraseña del usuario' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Contraseña actualizada' }),
+    (0, swagger_1.ApiResponse)({ status: 401, description: 'Contraseña actual incorrecta' }),
+    __param(0, (0, common_1.Request)()),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], ControladorUsuarios.prototype, "cambiarClave", null);
+exports.ControladorUsuarios = ControladorUsuarios = __decorate([
+    (0, swagger_1.ApiTags)('👤 Usuarios'),
+    (0, swagger_1.ApiBearerAuth)('JWT-auth'),
+    (0, common_1.UseGuards)(jwt_guardia_1.GuardiaJwt),
+    (0, common_1.Controller)('usuarios'),
+    __metadata("design:paramtypes", [typeof (_a = typeof usuarios_service_1.ServicioUsuarios !== "undefined" && usuarios_service_1.ServicioUsuarios) === "function" ? _a : Object])
+], ControladorUsuarios);
+
+
+/***/ }),
+
+/***/ "./servicios/puerta-enlace/src/controladores/usuario.module.ts":
+/*!*********************************************************************!*\
+  !*** ./servicios/puerta-enlace/src/controladores/usuario.module.ts ***!
+  \*********************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ModuloUsuarios = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const jwt_1 = __webpack_require__(/*! @nestjs/jwt */ "@nestjs/jwt");
+const config_1 = __webpack_require__(/*! @nestjs/config */ "@nestjs/config");
+const microservices_1 = __webpack_require__(/*! @nestjs/microservices */ "@nestjs/microservices");
+const usuario_controller_1 = __webpack_require__(/*! ./usuario.controller */ "./servicios/puerta-enlace/src/controladores/usuario.controller.ts");
+const usuarios_service_1 = __webpack_require__(/*! ./usuarios.service */ "./servicios/puerta-enlace/src/controladores/usuarios.service.ts");
+let ModuloUsuarios = class ModuloUsuarios {
+};
+exports.ModuloUsuarios = ModuloUsuarios;
+exports.ModuloUsuarios = ModuloUsuarios = __decorate([
+    (0, common_1.Module)({
+        imports: [
+            config_1.ConfigModule,
+            jwt_1.JwtModule.registerAsync({
+                imports: [config_1.ConfigModule],
+                inject: [config_1.ConfigService],
+                useFactory: async (configService) => ({
+                    secret: configService.get('SECRETO_JWT') || 'clave-super-secreta-cambiar-en-produccion',
+                    signOptions: {
+                        expiresIn: '24h',
+                    },
+                }),
+            }),
+            microservices_1.ClientsModule.register([
+                {
+                    name: 'SERVICIO_AUTENTICACION',
+                    transport: microservices_1.Transport.TCP,
+                    options: {
+                        host: process.env.HOST_AUTENTICACION || '127.0.0.1',
+                        port: parseInt(process.env.PUERTO_AUTENTICACION || '5001', 10),
+                    },
+                },
+            ]),
+        ],
+        controllers: [usuario_controller_1.ControladorUsuarios],
+        providers: [usuarios_service_1.ServicioUsuarios],
+    })
+], ModuloUsuarios);
+
+
+/***/ }),
+
+/***/ "./servicios/puerta-enlace/src/controladores/usuarios.service.ts":
+/*!***********************************************************************!*\
+  !*** ./servicios/puerta-enlace/src/controladores/usuarios.service.ts ***!
+  \***********************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var _a;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ServicioUsuarios = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const microservices_1 = __webpack_require__(/*! @nestjs/microservices */ "@nestjs/microservices");
+const rxjs_1 = __webpack_require__(/*! rxjs */ "rxjs");
+let ServicioUsuarios = class ServicioUsuarios {
+    clienteAutenticacion;
+    constructor(clienteAutenticacion) {
+        this.clienteAutenticacion = clienteAutenticacion;
+    }
+    async obtenerPorId(id) {
+        try {
+            const usuario = await (0, rxjs_1.firstValueFrom)(this.clienteAutenticacion.send({ cmd: 'obtener-usuario-por-id' }, { id }));
+            const { clave, ...usuarioSinClave } = usuario;
+            return usuarioSinClave;
+        }
+        catch (error) {
+            console.error('Error al obtener usuario:', error);
+            throw error;
+        }
+    }
+    async actualizarPerfil(id, datos) {
+        try {
+            const usuario = await (0, rxjs_1.firstValueFrom)(this.clienteAutenticacion.send({ cmd: 'actualizar-usuario' }, { id, datos }));
+            const { clave, ...usuarioSinClave } = usuario;
+            return usuarioSinClave;
+        }
+        catch (error) {
+            console.error('Error al actualizar perfil:', error);
+            throw error;
+        }
+    }
+    async cambiarClave(id, claveActual, claveNueva) {
+        try {
+            const resultado = await (0, rxjs_1.firstValueFrom)(this.clienteAutenticacion.send({ cmd: 'verificar-clave' }, { id, clave: claveActual }));
+            if (!resultado.valida) {
+                throw new common_1.UnauthorizedException('Contraseña actual incorrecta');
+            }
+            await (0, rxjs_1.firstValueFrom)(this.clienteAutenticacion.send({ cmd: 'cambiar-clave' }, { id, claveNueva }));
+            return { mensaje: 'Contraseña actualizada' };
+        }
+        catch (error) {
+            console.error('Error al cambiar contraseña:', error);
+            throw error;
+        }
+    }
+};
+exports.ServicioUsuarios = ServicioUsuarios;
+exports.ServicioUsuarios = ServicioUsuarios = __decorate([
+    (0, common_1.Injectable)(),
+    __param(0, (0, common_1.Inject)('SERVICIO_AUTENTICACION')),
+    __metadata("design:paramtypes", [typeof (_a = typeof microservices_1.ClientProxy !== "undefined" && microservices_1.ClientProxy) === "function" ? _a : Object])
+], ServicioUsuarios);
+
+
+/***/ }),
+
 /***/ "./servicios/puerta-enlace/src/puerta-enlace.module.ts":
 /*!*************************************************************!*\
   !*** ./servicios/puerta-enlace/src/puerta-enlace.module.ts ***!
@@ -787,6 +1204,7 @@ const acceso_module_1 = __webpack_require__(/*! ./acceso/acceso.module */ "./ser
 const productos_controller_1 = __webpack_require__(/*! ./controladores/productos.controller */ "./servicios/puerta-enlace/src/controladores/productos.controller.ts");
 const carrito_controller_1 = __webpack_require__(/*! ./controladores/carrito.controller */ "./servicios/puerta-enlace/src/controladores/carrito.controller.ts");
 const pedidos_controller_1 = __webpack_require__(/*! ./controladores/pedidos.controller */ "./servicios/puerta-enlace/src/controladores/pedidos.controller.ts");
+const usuario_module_1 = __webpack_require__(/*! ./controladores/usuario.module */ "./servicios/puerta-enlace/src/controladores/usuario.module.ts");
 let ModuloPuertaEnlace = class ModuloPuertaEnlace {
 };
 exports.ModuloPuertaEnlace = ModuloPuertaEnlace;
@@ -795,6 +1213,7 @@ exports.ModuloPuertaEnlace = ModuloPuertaEnlace = __decorate([
         imports: [
             config_1.ConfigModule.forRoot({ isGlobal: true }),
             acceso_module_1.ModuloAcceso,
+            usuario_module_1.ModuloUsuarios,
             microservices_1.ClientsModule.register([
                 {
                     name: 'SERVICIO_AUTENTICACION',
@@ -933,6 +1352,16 @@ module.exports = require("passport-jwt");
 
 /***/ }),
 
+/***/ "path":
+/*!***********************!*\
+  !*** external "path" ***!
+  \***********************/
+/***/ ((module) => {
+
+module.exports = require("path");
+
+/***/ }),
+
 /***/ "rxjs":
 /*!***********************!*\
   !*** external "rxjs" ***!
@@ -980,42 +1409,74 @@ var exports = __webpack_exports__;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core_1 = __webpack_require__(/*! @nestjs/core */ "@nestjs/core");
-const swagger_1 = __webpack_require__(/*! @nestjs/swagger */ "@nestjs/swagger");
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const swagger_1 = __webpack_require__(/*! @nestjs/swagger */ "@nestjs/swagger");
 const puerta_enlace_module_1 = __webpack_require__(/*! ./puerta-enlace.module */ "./servicios/puerta-enlace/src/puerta-enlace.module.ts");
+const path_1 = __webpack_require__(/*! path */ "path");
 async function iniciar() {
-    const aplicacion = await core_1.NestFactory.create(puerta_enlace_module_1.ModuloPuertaEnlace);
-    aplicacion.enableCors({
+    const app = await core_1.NestFactory.create(puerta_enlace_module_1.ModuloPuertaEnlace);
+    app.enableCors({
         origin: process.env.ORIGEN_CORS || 'http://localhost:5173',
-        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
         credentials: true,
     });
-    aplicacion.useGlobalPipes(new common_1.ValidationPipe({
+    app.useStaticAssets((0, path_1.join)(__dirname, '..', 'public'));
+    app.useGlobalPipes(new common_1.ValidationPipe({
         whitelist: true,
         forbidNonWhitelisted: true,
         transform: true,
     }));
-    const configuracionSwagger = new swagger_1.DocumentBuilder()
+    const config = new swagger_1.DocumentBuilder()
         .setTitle('API de Tienda con Microservicios')
-        .setDescription('Sistema de comercio electrónico con arquitectura de microservicios')
+        .setDescription(`
+API REST para sistema de comercio electrónico con arquitectura de microservicios.
+
+CREDENCIALES DE PRUEBA:
+- Admin: admin@tienda.com / 123456
+- Usuario: usuario@tienda.com / 123456
+
+AUTENTICACIÓN:
+1. POST /acceso/iniciar-sesion con correo y clave
+2. Copiar el token de la respuesta
+3. Click en "Authorize" y pegar el token
+4. Usar los endpoints protegidos
+
+ARQUITECTURA:
+- Servicio de Autenticación: Puerto 5001 (PostgreSQL)
+- Servicio de Catálogo: Puerto 5002 (MySQL)  
+- Servicio de Pedidos: Puerto 5003 (MongoDB)
+- API Gateway: Puerto 4000 (Este servidor)
+
+ENDPOINTS PRINCIPALES:
+- POST /acceso/iniciar-sesion - Iniciar sesión
+- GET /productos - Listar productos
+- POST /productos - Crear producto (Admin)
+- POST /carrito/agregar - Agregar al carrito
+- POST /carrito/finalizar-compra - Crear pedido
+- GET /pedidos - Ver pedidos
+    `)
         .setVersion('1.0')
         .addBearerAuth({
         type: 'http',
         scheme: 'bearer',
         bearerFormat: 'JWT',
-        description: 'Ingresa tu token JWT aquí'
-    })
-        .addTag('Autenticación', 'Endpoints para login y registro')
-        .addTag('Productos', 'Gestión del catálogo de productos')
-        .addTag('Carrito', 'Operaciones del carrito de compras')
-        .addTag('Pedidos', 'Consulta de pedidos realizados')
+        description: 'Token JWT (sin "Bearer")',
+        in: 'header',
+    }, 'JWT-auth')
         .build();
-    const documento = swagger_1.SwaggerModule.createDocument(aplicacion, configuracionSwagger);
-    swagger_1.SwaggerModule.setup('api', aplicacion, documento);
+    const document = swagger_1.SwaggerModule.createDocument(app, config);
+    swagger_1.SwaggerModule.setup('api', app, document, {
+        customSiteTitle: 'API Tienda',
+        customCss: '.swagger-ui .topbar { display: none; }',
+        swaggerOptions: {
+            persistAuthorization: true,
+            docExpansion: 'list',
+        },
+    });
     const puerto = process.env.PUERTO_GATEWAY || 4000;
-    await aplicacion.listen(puerto);
-    console.log(`\n🚀 Puerta de Enlace corriendo en: http://localhost:${puerto}`);
-    console.log(`📚 Documentación Swagger: http://localhost:${puerto}/api\n`);
+    await app.listen(puerto);
+    console.log(`\n🚀 Gateway corriendo en: http://localhost:${puerto}`);
+    console.log(`🎨 Documentación bonita: http://localhost:${puerto}`);
+    console.log(`📚 Swagger: http://localhost:${puerto}/api\n`);
 }
 iniciar();
 

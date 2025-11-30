@@ -1,55 +1,54 @@
-import { Injectable, Inject, UnauthorizedException } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { JwtService } from '@nestjs/jwt';
 import { firstValueFrom } from 'rxjs';
-import { IniciarSesionDto } from '@compartido/dtos';
+import { IniciarSesionDto, RegistrarUsuarioDto } from '@compartido/dtos';
 
 @Injectable()
 export class ServicioAcceso {
   constructor(
-    @Inject('SERVICIO_AUTENTICACION') 
-    private clienteAutenticacion: ClientProxy,
-    private servicioJwt: JwtService,
+    @Inject('SERVICIO_AUTENTICACION')
+    private readonly clienteAutenticacion: ClientProxy,
   ) {}
 
   /**
-   * Valida las credenciales del usuario con el microservicio
+   * Iniciar sesión
    */
-  async validarUsuario(datos: IniciarSesionDto): Promise<any> {
-    const usuario = await firstValueFrom(
-      this.clienteAutenticacion.send({ cmd: 'validar_usuario' }, datos),
-    ).catch((error) => {
-      console.error('Error al contactar servicio de autenticación:', error);
-      throw new UnauthorizedException(
-        'Error al validar credenciales. Intenta nuevamente.'
+  async iniciarSesion(dto: IniciarSesionDto) {
+    try {
+      const resultado = await firstValueFrom(
+        this.clienteAutenticacion.send(
+          { cmd: 'iniciar-sesion' },
+          { correo: dto.correo, clave: dto.clave }
+        )
       );
-    });
 
-    if (!usuario) {
-      throw new UnauthorizedException('Correo o contraseña incorrectos');
+      return resultado;
+    } catch (error) {
+      console.error('Error en iniciar sesión:', error);
+      throw error;
     }
-    
-    return usuario;
   }
 
   /**
-   * Genera un token JWT para el usuario autenticado
+   * Registrar un nuevo usuario
    */
-  async generarToken(usuario: any) {
-    const cargaUtil = { 
-      sub: usuario.id,
-      correo: usuario.correo,
-      rol: usuario.rol
-    };
-    
-    return {
-      tokenAcceso: this.servicioJwt.sign(cargaUtil),
-      usuario: {
-        id: usuario.id,
-        correo: usuario.correo,
-        nombre: usuario.nombre,
-        rol: usuario.rol
-      }
-    };
+  async registrarUsuario(dto: RegistrarUsuarioDto) {
+    try {
+      const usuario = await firstValueFrom(
+        this.clienteAutenticacion.send(
+          { cmd: 'registrar-usuario' },
+          {
+            nombre: dto.nombre,
+            correo: dto.correo,
+            clave: dto.clave,
+          }
+        )
+      );
+
+      return usuario;
+    } catch (error) {
+      console.error('Error en registro de usuario:', error);
+      throw error;
+    }
   }
 }

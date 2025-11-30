@@ -10,9 +10,73 @@ export class ControladorAutenticacion {
   ) {}
 
   /**
-   * Valida las credenciales de un usuario
-   * @param datos Correo y contraseña del usuario
-   * @returns Usuario si las credenciales son válidas, null si no
+   * NUEVO: Iniciar sesión (usado por el Gateway)
+   * Valida credenciales y devuelve token JWT + datos de usuario
+   */
+  @MessagePattern({ cmd: 'iniciar-sesion' })
+  async iniciarSesion(datos: IniciarSesionDto) {
+    const usuario = await this.servicioAutenticacion.validarUsuario(datos);
+    
+    if (!usuario) {
+      throw new Error('Credenciales inválidas');
+    }
+
+    // Generar token JWT
+    const token = await this.servicioAutenticacion.generarToken(usuario);
+
+    return {
+      tokenAcceso: token,
+      usuario: {
+        id: usuario.id,
+        correo: usuario.correo,
+        nombre: usuario.nombre,
+        rol: usuario.rol,
+      },
+    };
+  }
+
+  /**
+   * NUEVO: Registrar un nuevo usuario
+   */
+  @MessagePattern({ cmd: 'registrar-usuario' })
+  async registrarUsuario(datos: any) {
+    return this.servicioAutenticacion.crearUsuario(datos);
+  }
+
+  /**
+   * NUEVO: Obtener un usuario por ID (usado para enriquecer pedidos)
+   */
+  @MessagePattern({ cmd: 'obtener-usuario-por-id' })
+  async obtenerUsuarioPorId(datos: { id: number }) {
+    return this.servicioAutenticacion.obtenerUsuarioPorId(datos.id);
+  }
+
+  /**
+   * NUEVO: Actualizar perfil de usuario
+   */
+  @MessagePattern({ cmd: 'actualizar-usuario' })
+  async actualizarUsuario(datos: { id: number; datos: any }) {
+    return this.servicioAutenticacion.actualizarUsuario(datos.id, datos.datos);
+  }
+
+  /**
+   * NUEVO: Verificar contraseña actual
+   */
+  @MessagePattern({ cmd: 'verificar-clave' })
+  async verificarClave(datos: { id: number; clave: string }) {
+    return this.servicioAutenticacion.verificarClave(datos.id, datos.clave);
+  }
+
+  /**
+   * NUEVO: Cambiar contraseña
+   */
+  @MessagePattern({ cmd: 'cambiar-clave' })
+  async cambiarClave(datos: { id: number; claveNueva: string }) {
+    return this.servicioAutenticacion.cambiarClave(datos.id, datos.claveNueva);
+  }
+
+  /**
+   * Handler original - Mantener para compatibilidad
    */
   @MessagePattern({ cmd: 'validar_usuario' })
   async validarUsuario(datos: IniciarSesionDto) {
@@ -20,9 +84,7 @@ export class ControladorAutenticacion {
   }
 
   /**
-   * Obtiene usuarios por sus IDs (para enriquecer pedidos)
-   * @param ids Lista de IDs de usuarios
-   * @returns Mapa de usuarios indexados por ID
+   * Handler original - Mantener para compatibilidad
    */
   @MessagePattern({ cmd: 'obtener_usuarios_por_ids' })
   async obtenerUsuariosPorIds(ids: number[]) {
@@ -30,9 +92,7 @@ export class ControladorAutenticacion {
   }
 
   /**
-   * Crea un nuevo usuario en el sistema
-   * @param datos Datos del usuario a crear
-   * @returns Usuario creado
+   * Handler original - Mantener para compatibilidad
    */
   @MessagePattern({ cmd: 'crear_usuario' })
   async crearUsuario(datos: any) {

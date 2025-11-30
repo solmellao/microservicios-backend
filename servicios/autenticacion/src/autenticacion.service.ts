@@ -1,85 +1,197 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { ServicioPrisma } from './prisma.service';
-import { IniciarSesionDto } from '@compartido/dtos';
 import * as bcrypt from 'bcrypt';
+import { IniciarSesionDto } from '@compartido/dtos';
 
 @Injectable()
 export class ServicioAutenticacion {
-  constructor(private readonly prisma: ServicioPrisma) {}
+  constructor(
+    private readonly prisma: ServicioPrisma,
+    private readonly jwtService: JwtService,
+  ) {}
 
   /**
-   * Valida las credenciales de un usuario
+   * Validar credenciales de usuario
    */
-  async validarUsuario(datos: IniciarSesionDto) {
-    const { correo, clave } = datos;
-
-    // Buscar usuario por correo
+  async validarUsuario(dto: IniciarSesionDto) {
     const usuario = await this.prisma.usuario.findUnique({
-      where: { correo },
+      where: { correo: dto.correo },
     });
 
     if (!usuario) {
       return null;
     }
 
-    // Verificar contraseña
-    const claveValida = await bcrypt.compare(clave, usuario.claveHash);
-    
+    const claveValida = await bcrypt.compare(dto.clave, usuario.claveHash);
+
     if (!claveValida) {
       return null;
     }
 
-    // Retornar datos del usuario sin la contraseña
-    const { claveHash, ...datosUsuario } = usuario;
-    return datosUsuario;
+    // No devolver la contraseña
+    const { claveHash, ...usuarioSinClave } = usuario;
+     console.log(' Payload del token:', usuarioSinClave);
+
+    return usuarioSinClave;
   }
 
   /**
-   * Obtiene múltiples usuarios por sus IDs
-   * Útil para enriquecer pedidos con datos de usuarios
+   * Generar token JWT
+   */
+  async generarToken(usuario: any) {
+    const payload = {
+      id: usuario.id,
+      correo: usuario.correo,
+      nombre: usuario.nombre,
+      rol: usuario.rol,
+    };
+
+    return this.jwtService.sign(payload);
+  }
+
+  /**
+   * Crear un nuevo usuario
+   */
+  async crearUsuario(datos: any) {
+    // Verificar si el correo ya existe
+    const usuarioExistente = await this.prisma.usuario.findUnique({
+      where: { correo: datos.correo },
+    });
+
+    if (usuarioExistente) {
+      throw new ConflictException('El correo ya está registrado');
+    }
+
+    // Encriptar contraseña
+    const claveEncriptada = await bcrypt.hash(datos.clave, 10);
+
+    // Crear usuario
+    const usuario = await this.prisma.usuario.create({
+      data: {
+        nombre: datos.nombre,
+        correo: datos.correo,
+        claveHash: claveEncriptada,
+        rol: datos.rol || 'USUARIO', // Por defecto USUARIO
+      },
+    });
+
+    // No devolver la contraseña
+    const { claveHash, ...usuarioSinClave } = usuario;
+    return usuarioSinClave;
+  }
+
+  /**
+   * Obtener usuario por ID
+   */
+  async obtenerUsuarioPorId(id: number) {
+    const usuario = await this.prisma.usuario.findUnique({
+      where: { id },
+    });
+
+    if (!usuario) {
+      throw new NotFoundException(`Usuario con ID ${id} no encontrado`);
+    }
+
+    // No devolver la contraseña
+    const { claveHash, ...usuarioSinClave } = usuario;
+    return usuarioSinClave;
+  }
+
+  /**
+   * Obtener múltiples usuarios por IDs
    */
   async obtenerUsuariosPorIds(ids: number[]) {
     const usuarios = await this.prisma.usuario.findMany({
-      where: { id: { in: ids } },
-      select: {
-        id: true,
-        correo: true,
-        nombre: true,
-        rol: true,
+      where: {
+        id: { in: ids },
       },
     });
 
-    // Convertir array a objeto indexado por ID para acceso rápido
-    return usuarios.reduce((mapa, usuario) => {
-      mapa[usuario.id] = usuario;
-      return mapa;
-    }, {} as Record<number, any>);
+    // Crear un mapa de usuarios sin contraseñas
+    const mapaUsuarios = {};
+    usuarios.forEach((usuario) => {
+      const { claveHash, ...usuarioSinClave } = usuario;
+      mapaUsuarios[usuario.id] = usuarioSinClave;
+    });
+
+    return mapaUsuarios;
   }
 
   /**
-   * Crea un nuevo usuario en el sistema
+   * Actualizar perfil de usuario
    */
-  async crearUsuario(datos: {
-    correo: string;
-    nombre: string;
-    clave: string;
-    rol?: 'ADMIN' | 'USUARIO';
-  }) {
-    // Encriptar la contraseña
-    const claveHash = await bcrypt.hash(datos.clave, 10);
-
-    // Crear usuario en la base de datos
-    const usuario = await this.prisma.usuario.create({
-      data: {
-        correo: datos.correo,
-        nombre: datos.nombre,
-        claveHash,
-        rol: datos.rol || 'USUARIO',
-      },
+  async actualizarUsuario(id: number, datos: any) {
+    const usuario = await this.prisma.usuario.findUnique({
+      where: { id },
     });
 
-    // Retornar sin la contraseña
-    const { claveHash: _, ...usuarioSinClave } = usuario;
+    if (!usuario) {
+      throw new NotFoundException(`Usuario con ID ${id} no encontrado`);
+    }
+
+    // Si se está actualizando el correo, verificar que no exista
+    if (datos.correo && datos.correo !== usuario.correo) {
+      const correoExistente = await this.prisma.usuario.findUnique({
+        where: { correo: datos.correo },
+      });
+
+      if (correoExistente) {
+        throw new ConflictException('El correo ya está en uso');
+      }
+    }
+
+    // Actualizar usuario (sin permitir cambiar la contraseña aquí)
+    const { clave, rol, ...datosActualizables } = datos;
+
+    const usuarioActualizado = await this.prisma.usuario.update({
+      where: { id },
+      data: datosActualizables,
+    });
+
+    // No devolver la contraseña
+    const { claveHash: _, ...usuarioSinClave } = usuarioActualizado;
     return usuarioSinClave;
+  }
+
+  /**
+   * Verificar contraseña actual
+   */
+  async verificarClave(id: number, clave: string) {
+    const usuario = await this.prisma.usuario.findUnique({
+      where: { id },
+    });
+
+    if (!usuario) {
+      throw new NotFoundException(`Usuario con ID ${id} no encontrado`);
+    }
+
+    const claveValida = await bcrypt.compare(clave, usuario.claveHash);
+
+    return { valida: claveValida };
+  }
+
+  /**
+   * Cambiar contraseña
+   */
+  async cambiarClave(id: number, claveNueva: string) {
+    const usuario = await this.prisma.usuario.findUnique({
+      where: { id },
+    });
+
+    if (!usuario) {
+      throw new NotFoundException(`Usuario con ID ${id} no encontrado`);
+    }
+
+    // Encriptar nueva contraseña
+    const claveEncriptada = await bcrypt.hash(claveNueva, 10);
+
+    // Actualizar contraseña
+    await this.prisma.usuario.update({
+      where: { id },
+      data: { claveHash: claveEncriptada },
+    });
+
+    return { mensaje: 'Contraseña actualizada exitosamente' };
   }
 }

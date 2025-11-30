@@ -13,6 +13,7 @@ model Usuario {
   nombre             String
   claveHash          String       @map("clave_hash")
   rol                RolUsuario   @default(USUARIO)
+  imagenUrl          String?
   fechaCreacion      DateTime     @default(now()) @map("fecha_creacion")
   fechaActualizacion DateTime     @updatedAt @map("fecha_actualizacion")
 

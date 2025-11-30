@@ -1,0 +1,261 @@
+# ============================================
+# DEPENDENCIAS DEL PROYECTO
+# Tienda con Microservicios - Backend
+# ============================================
+
+# ============================================
+# FRAMEWORK PRINCIPAL
+# ============================================
+@nestjs/common@10.4.15
+@nestjs/core@10.4.15
+@nestjs/platform-express@10.4.15
+typescript@5.6.3
+ts-node@10.9.2
+
+# ============================================
+# MICROSERVICIOS Y COMUNICACIÓN
+# ============================================
+@nestjs/microservices@10.4.15
+
+# ============================================
+# BASES DE DATOS
+# ============================================
+
+## PostgreSQL (Servicio de Autenticación)
+prisma@5.22.0
+@prisma/client@5.22.0
+
+## MySQL (Servicio de Catálogo)
+typeorm@0.3.20
+@nestjs/typeorm@10.0.2
+mysql2@3.11.5
+
+## MongoDB (Servicio de Pedidos)
+mongoose@8.8.4
+@nestjs/mongoose@10.1.0
+
+# ============================================
+# AUTENTICACIÓN Y SEGURIDAD
+# ============================================
+@nestjs/jwt@10.2.0
+@nestjs/passport@10.0.3
+passport@0.7.0
+passport-jwt@4.0.1
+passport-local@1.0.0
+bcrypt@5.1.1
+@types/bcrypt@5.0.2
+
+# ============================================
+# CONFIGURACIÓN
+# ============================================
+@nestjs/config@3.3.0
+
+# ============================================
+# VALIDACIÓN Y TRANSFORMACIÓN
+# ============================================
+class-validator@0.14.1
+class-transformer@0.5.1
+
+# ============================================
+# DOCUMENTACIÓN API
+# ============================================
+@nestjs/swagger@8.0.3
+swagger-ui-express@5.0.1
+
+# ============================================
+# TAREAS PROGRAMADAS (CRON JOBS)
+# ============================================
+@nestjs/schedule@4.1.1
+
+# ============================================
+# UTILIDADES
+# ============================================
+rxjs@7.8.1
+reflect-metadata@0.2.2
+
+# ============================================
+# HERRAMIENTAS DE DESARROLLO
+# ============================================
+@nestjs/cli@10.4.15
+@nestjs/schematics@10.2.3
+@nestjs/testing@10.4.15
+@types/node@22.9.3
+@types/express@5.0.0
+@types/passport-jwt@4.0.1
+@types/passport-local@1.0.38
+jest@29.7.0
+@types/jest@29.5.14
+ts-jest@29.2.5
+prettier@3.3.3
+eslint@9.16.0
+@typescript-eslint/eslint-plugin@8.16.0
+@typescript-eslint/parser@8.16.0
+source-map-support@0.5.21
+ts-loader@9.5.1
+tsconfig-paths@4.2.0
+
+# ============================================
+# CONTENERIZACIÓN
+# ============================================
+
+## Docker
+# Imagen Base: node:20-alpine
+# Contenedores:
+#   - PostgreSQL 16-alpine
+#   - MySQL 8.0
+#   - MongoDB 7
+
+## Docker Compose
+# Version: 3.8
+# Servicios: 3 bases de datos + Backend (opcional)
+
+# ============================================
+# SISTEMA OPERATIVO Y RUNTIME
+# ============================================
+Node.js: 20.x LTS
+NPM: 10.x
+Sistema Operativo: Linux Alpine (en Docker)
+Sistema Operativo Host: Windows 11 / Ubuntu 24
+
+# ============================================
+# ARQUITECTURA DEL PROYECTO
+# ============================================
+
+## Microservicios:
+1. Servicio de Autenticación (Puerto 5001)
+   - Base de datos: PostgreSQL
+   - ORM: Prisma
+   - Funcionalidad: Login, registro, validación JWT
+
+2. Servicio de Catálogo (Puerto 5002)
+   - Base de datos: MySQL
+   - ORM: TypeORM
+   - Funcionalidad: Productos, inventario, reservas
+   - Cron Job: Limpieza de reservas cada 6 horas
+
+3. Servicio de Pedidos (Puerto 5003)
+   - Base de datos: MongoDB
+   - ODM: Mongoose
+   - Funcionalidad: Crear pedidos, historial
+
+4. Puerta de Enlace / API Gateway (Puerto 4000)
+   - Protocolo: HTTP/REST
+   - Autenticación: JWT con Passport
+   - Documentación: Swagger UI
+   - CORS: Configurado para frontend
+
+## Comunicación:
+- Gateway → Microservicios: TCP
+- Cliente → Gateway: HTTP/REST
+- Autenticación: JWT Bearer Token
+
+# ============================================
+# CARACTERÍSTICAS ESPECIALES
+# ============================================
+
+## Seguridad:
+- Encriptación de contraseñas con bcrypt (10 rounds)
+- Tokens JWT con expiración de 60 minutos
+- Validación de roles (ADMIN, USUARIO)
+- Guards de autenticación en rutas protegidas
+
+## Optimización:
+- Sistema de reservas de stock
+- Inventario físico vs inventario reservado
+- Transacciones para operaciones críticas
+
+## Automatización:
+- Tarea programada: Limpieza de reservas >3 días cada 6 horas
+- Utiliza @nestjs/schedule con CronExpression
+
+# ============================================
+# VARIABLES DE ENTORNO REQUERIDAS
+# ============================================
+PUERTO_GATEWAY=4000
+SECRETO_JWT=cambiar-este-secreto
+ORIGEN_CORS=http://localhost:5173
+
+PUERTO_AUTENTICACION=5001
+URL_BD_POSTGRES=postgresql://admin:admin@localhost:5432/usuarios_bd
+
+PUERTO_CATALOGO=5002
+BD_HOST=localhost
+BD_PUERTO=3306
+BD_USUARIO=admin
+BD_CLAVE=admin
+BD_NOMBRE=productos_bd
+BD_SINCRONIZAR=true
+
+PUERTO_PEDIDOS=5003
+URL_MONGODB=mongodb://localhost:27017/pedidos_bd
+
+# ============================================
+# COMANDOS DE INSTALACIÓN Y EJECUCIÓN
+# ============================================
+
+# Instalar dependencias:
+npm install --legacy-peer-deps
+
+# Levantar bases de datos:
+docker-compose up -d
+
+# Generar cliente Prisma:
+npx prisma generate --schema=./servicios/autenticacion/prisma/schema.prisma
+
+# Ejecutar migraciones:
+npx prisma migrate dev --schema=./servicios/autenticacion/prisma/schema.prisma
+
+# Insertar datos de prueba:
+npx ts-node seed-datos.ts
+
+# Iniciar servicios (4 terminales):
+npm run iniciar:autenticacion
+npm run iniciar:catalogo
+npm run iniciar:pedidos
+npm run iniciar:puerta-enlace
+
+# ============================================
+# CREDENCIALES DE PRUEBA
+# ============================================
+
+Administrador:
+  Correo: admin@tienda.com
+  Clave: 123456
+  Rol: ADMIN
+
+Usuario:
+  Correo: usuario@tienda.com
+  Clave: 123456
+  Rol: USUARIO
+
+# ============================================
+# PUERTOS UTILIZADOS
+# ============================================
+4000  - API Gateway (HTTP)
+5001  - Servicio Autenticación (TCP)
+5002  - Servicio Catálogo (TCP)
+5003  - Servicio Pedidos (TCP)
+5432  - PostgreSQL
+3306  - MySQL
+27017 - MongoDB
+
+# ============================================
+# ENDPOINTS PRINCIPALES (Swagger)
+# ============================================
+GET  /api - Documentación Swagger
+POST /acceso/iniciar-sesion - Login
+GET  /productos - Listar productos
+POST /productos - Crear producto (Admin)
+POST /carrito/agregar - Agregar al carrito
+POST /carrito/finalizar-compra - Crear pedido
+GET  /pedidos - Listar pedidos
+
+# ============================================
+# AUTOR Y FECHA
+# ============================================
+Proyecto: Tienda con Microservicios Backend
+Lenguaje: TypeScript / Node.js
+Framework: NestJS 10
+Fecha: Noviembre 2025
+Versión: 1.0.0
+Autora: Nadia Mellao

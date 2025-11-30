@@ -87,6 +87,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 __exportStar(__webpack_require__(/*! ./iniciar-sesion.dto */ "./compartido/dtos/iniciar-sesion.dto.ts"), exports);
+__exportStar(__webpack_require__(/*! ./registrar-usuario.dto */ "./compartido/dtos/registrar-usuario.dto.ts"), exports);
 __exportStar(__webpack_require__(/*! ./producto.dto */ "./compartido/dtos/producto.dto.ts"), exports);
 __exportStar(__webpack_require__(/*! ./compra.dto */ "./compartido/dtos/compra.dto.ts"), exports);
 
@@ -228,6 +229,65 @@ __decorate([
 
 /***/ }),
 
+/***/ "./compartido/dtos/registrar-usuario.dto.ts":
+/*!**************************************************!*\
+  !*** ./compartido/dtos/registrar-usuario.dto.ts ***!
+  \**************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.RegistrarUsuarioDto = void 0;
+const class_validator_1 = __webpack_require__(/*! class-validator */ "class-validator");
+const swagger_1 = __webpack_require__(/*! @nestjs/swagger */ "@nestjs/swagger");
+class RegistrarUsuarioDto {
+    nombre;
+    correo;
+    clave;
+}
+exports.RegistrarUsuarioDto = RegistrarUsuarioDto;
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Nombre completo del usuario',
+        example: 'Juan Pérez',
+    }),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], RegistrarUsuarioDto.prototype, "nombre", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Correo electrónico del usuario',
+        example: 'juan@ejemplo.com',
+    }),
+    (0, class_validator_1.IsEmail)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], RegistrarUsuarioDto.prototype, "correo", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Contraseña del usuario (mínimo 6 caracteres)',
+        example: '123456',
+        minLength: 6,
+    }),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.MinLength)(6, { message: 'La contraseña debe tener al menos 6 caracteres' }),
+    __metadata("design:type", String)
+], RegistrarUsuarioDto.prototype, "clave", void 0);
+
+
+/***/ }),
+
 /***/ "./servicios/autenticacion/src/autenticacion.controller.ts":
 /*!*****************************************************************!*\
   !*** ./servicios/autenticacion/src/autenticacion.controller.ts ***!
@@ -244,7 +304,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var _a, _b;
+var _a, _b, _c;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ControladorAutenticacion = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
@@ -255,6 +315,37 @@ let ControladorAutenticacion = class ControladorAutenticacion {
     servicioAutenticacion;
     constructor(servicioAutenticacion) {
         this.servicioAutenticacion = servicioAutenticacion;
+    }
+    async iniciarSesion(datos) {
+        const usuario = await this.servicioAutenticacion.validarUsuario(datos);
+        if (!usuario) {
+            throw new Error('Credenciales inválidas');
+        }
+        const token = await this.servicioAutenticacion.generarToken(usuario);
+        return {
+            tokenAcceso: token,
+            usuario: {
+                id: usuario.id,
+                correo: usuario.correo,
+                nombre: usuario.nombre,
+                rol: usuario.rol,
+            },
+        };
+    }
+    async registrarUsuario(datos) {
+        return this.servicioAutenticacion.crearUsuario(datos);
+    }
+    async obtenerUsuarioPorId(datos) {
+        return this.servicioAutenticacion.obtenerUsuarioPorId(datos.id);
+    }
+    async actualizarUsuario(datos) {
+        return this.servicioAutenticacion.actualizarUsuario(datos.id, datos.datos);
+    }
+    async verificarClave(datos) {
+        return this.servicioAutenticacion.verificarClave(datos.id, datos.clave);
+    }
+    async cambiarClave(datos) {
+        return this.servicioAutenticacion.cambiarClave(datos.id, datos.claveNueva);
     }
     async validarUsuario(datos) {
         return this.servicioAutenticacion.validarUsuario(datos);
@@ -268,9 +359,45 @@ let ControladorAutenticacion = class ControladorAutenticacion {
 };
 exports.ControladorAutenticacion = ControladorAutenticacion;
 __decorate([
-    (0, microservices_1.MessagePattern)({ cmd: 'validar_usuario' }),
+    (0, microservices_1.MessagePattern)({ cmd: 'iniciar-sesion' }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [typeof (_b = typeof dtos_1.IniciarSesionDto !== "undefined" && dtos_1.IniciarSesionDto) === "function" ? _b : Object]),
+    __metadata("design:returntype", Promise)
+], ControladorAutenticacion.prototype, "iniciarSesion", null);
+__decorate([
+    (0, microservices_1.MessagePattern)({ cmd: 'registrar-usuario' }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], ControladorAutenticacion.prototype, "registrarUsuario", null);
+__decorate([
+    (0, microservices_1.MessagePattern)({ cmd: 'obtener-usuario-por-id' }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], ControladorAutenticacion.prototype, "obtenerUsuarioPorId", null);
+__decorate([
+    (0, microservices_1.MessagePattern)({ cmd: 'actualizar-usuario' }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], ControladorAutenticacion.prototype, "actualizarUsuario", null);
+__decorate([
+    (0, microservices_1.MessagePattern)({ cmd: 'verificar-clave' }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], ControladorAutenticacion.prototype, "verificarClave", null);
+__decorate([
+    (0, microservices_1.MessagePattern)({ cmd: 'cambiar-clave' }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], ControladorAutenticacion.prototype, "cambiarClave", null);
+__decorate([
+    (0, microservices_1.MessagePattern)({ cmd: 'validar_usuario' }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [typeof (_c = typeof dtos_1.IniciarSesionDto !== "undefined" && dtos_1.IniciarSesionDto) === "function" ? _c : Object]),
     __metadata("design:returntype", Promise)
 ], ControladorAutenticacion.prototype, "validarUsuario", null);
 __decorate([
@@ -309,6 +436,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ModuloAutenticacion = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const jwt_1 = __webpack_require__(/*! @nestjs/jwt */ "@nestjs/jwt");
 const config_1 = __webpack_require__(/*! @nestjs/config */ "@nestjs/config");
 const autenticacion_controller_1 = __webpack_require__(/*! ./autenticacion.controller */ "./servicios/autenticacion/src/autenticacion.controller.ts");
 const autenticacion_service_1 = __webpack_require__(/*! ./autenticacion.service */ "./servicios/autenticacion/src/autenticacion.service.ts");
@@ -319,13 +447,20 @@ exports.ModuloAutenticacion = ModuloAutenticacion;
 exports.ModuloAutenticacion = ModuloAutenticacion = __decorate([
     (0, common_1.Module)({
         imports: [
-            config_1.ConfigModule.forRoot({
-                isGlobal: true,
-                envFilePath: '.env',
+            jwt_1.JwtModule.registerAsync({
+                imports: [config_1.ConfigModule],
+                inject: [config_1.ConfigService],
+                useFactory: async (configService) => ({
+                    secret: configService.get('SECRETO_JWT') || 'clave-super-secreta-cambiar-en-produccion',
+                    signOptions: {
+                        expiresIn: '24h',
+                    },
+                }),
             }),
         ],
         controllers: [autenticacion_controller_1.ControladorAutenticacion],
         providers: [autenticacion_service_1.ServicioAutenticacion, prisma_service_1.ServicioPrisma],
+        exports: [autenticacion_service_1.ServicioAutenticacion],
     })
 ], ModuloAutenticacion);
 
@@ -381,66 +516,204 @@ var __importStar = (this && this.__importStar) || (function () {
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var _a;
+var _a, _b;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ServicioAutenticacion = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const jwt_1 = __webpack_require__(/*! @nestjs/jwt */ "@nestjs/jwt");
 const prisma_service_1 = __webpack_require__(/*! ./prisma.service */ "./servicios/autenticacion/src/prisma.service.ts");
 const bcrypt = __importStar(__webpack_require__(/*! bcrypt */ "bcrypt"));
 let ServicioAutenticacion = class ServicioAutenticacion {
     prisma;
-    constructor(prisma) {
+    jwtService;
+    constructor(prisma, jwtService) {
         this.prisma = prisma;
+        this.jwtService = jwtService;
     }
-    async validarUsuario(datos) {
-        const { correo, clave } = datos;
+    async validarUsuario(dto) {
         const usuario = await this.prisma.usuario.findUnique({
-            where: { correo },
+            where: { correo: dto.correo },
         });
         if (!usuario) {
             return null;
         }
-        const claveValida = await bcrypt.compare(clave, usuario.claveHash);
+        const claveValida = await bcrypt.compare(dto.clave, usuario.claveHash);
         if (!claveValida) {
             return null;
         }
-        const { claveHash, ...datosUsuario } = usuario;
-        return datosUsuario;
+        const { claveHash, ...usuarioSinClave } = usuario;
+        console.log(' Payload del token:', usuarioSinClave);
+        return usuarioSinClave;
     }
-    async obtenerUsuariosPorIds(ids) {
-        const usuarios = await this.prisma.usuario.findMany({
-            where: { id: { in: ids } },
-            select: {
-                id: true,
-                correo: true,
-                nombre: true,
-                rol: true,
-            },
-        });
-        return usuarios.reduce((mapa, usuario) => {
-            mapa[usuario.id] = usuario;
-            return mapa;
-        }, {});
+    async generarToken(usuario) {
+        const payload = {
+            id: usuario.id,
+            correo: usuario.correo,
+            nombre: usuario.nombre,
+            rol: usuario.rol,
+        };
+        return this.jwtService.sign(payload);
     }
     async crearUsuario(datos) {
-        const claveHash = await bcrypt.hash(datos.clave, 10);
+        const usuarioExistente = await this.prisma.usuario.findUnique({
+            where: { correo: datos.correo },
+        });
+        if (usuarioExistente) {
+            throw new common_1.ConflictException('El correo ya está registrado');
+        }
+        const claveEncriptada = await bcrypt.hash(datos.clave, 10);
         const usuario = await this.prisma.usuario.create({
             data: {
-                correo: datos.correo,
                 nombre: datos.nombre,
-                claveHash,
+                correo: datos.correo,
+                claveHash: claveEncriptada,
                 rol: datos.rol || 'USUARIO',
             },
         });
-        const { claveHash: _, ...usuarioSinClave } = usuario;
+        const { claveHash, ...usuarioSinClave } = usuario;
         return usuarioSinClave;
+    }
+    async obtenerUsuarioPorId(id) {
+        const usuario = await this.prisma.usuario.findUnique({
+            where: { id },
+        });
+        if (!usuario) {
+            throw new common_1.NotFoundException(`Usuario con ID ${id} no encontrado`);
+        }
+        const { claveHash, ...usuarioSinClave } = usuario;
+        return usuarioSinClave;
+    }
+    async obtenerUsuariosPorIds(ids) {
+        const usuarios = await this.prisma.usuario.findMany({
+            where: {
+                id: { in: ids },
+            },
+        });
+        const mapaUsuarios = {};
+        usuarios.forEach((usuario) => {
+            const { claveHash, ...usuarioSinClave } = usuario;
+            mapaUsuarios[usuario.id] = usuarioSinClave;
+        });
+        return mapaUsuarios;
+    }
+    async actualizarUsuario(id, datos) {
+        const usuario = await this.prisma.usuario.findUnique({
+            where: { id },
+        });
+        if (!usuario) {
+            throw new common_1.NotFoundException(`Usuario con ID ${id} no encontrado`);
+        }
+        if (datos.correo && datos.correo !== usuario.correo) {
+            const correoExistente = await this.prisma.usuario.findUnique({
+                where: { correo: datos.correo },
+            });
+            if (correoExistente) {
+                throw new common_1.ConflictException('El correo ya está en uso');
+            }
+        }
+        const { clave, rol, ...datosActualizables } = datos;
+        const usuarioActualizado = await this.prisma.usuario.update({
+            where: { id },
+            data: datosActualizables,
+        });
+        const { claveHash: _, ...usuarioSinClave } = usuarioActualizado;
+        return usuarioSinClave;
+    }
+    async verificarClave(id, clave) {
+        const usuario = await this.prisma.usuario.findUnique({
+            where: { id },
+        });
+        if (!usuario) {
+            throw new common_1.NotFoundException(`Usuario con ID ${id} no encontrado`);
+        }
+        const claveValida = await bcrypt.compare(clave, usuario.claveHash);
+        return { valida: claveValida };
+    }
+    async cambiarClave(id, claveNueva) {
+        const usuario = await this.prisma.usuario.findUnique({
+            where: { id },
+        });
+        if (!usuario) {
+            throw new common_1.NotFoundException(`Usuario con ID ${id} no encontrado`);
+        }
+        const claveEncriptada = await bcrypt.hash(claveNueva, 10);
+        await this.prisma.usuario.update({
+            where: { id },
+            data: { claveHash: claveEncriptada },
+        });
+        return { mensaje: 'Contraseña actualizada exitosamente' };
     }
 };
 exports.ServicioAutenticacion = ServicioAutenticacion;
 exports.ServicioAutenticacion = ServicioAutenticacion = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.ServicioPrisma !== "undefined" && prisma_service_1.ServicioPrisma) === "function" ? _a : Object])
+    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.ServicioPrisma !== "undefined" && prisma_service_1.ServicioPrisma) === "function" ? _a : Object, typeof (_b = typeof jwt_1.JwtService !== "undefined" && jwt_1.JwtService) === "function" ? _b : Object])
 ], ServicioAutenticacion);
+
+
+/***/ }),
+
+/***/ "./servicios/autenticacion/src/principal.ts":
+/*!**************************************************!*\
+  !*** ./servicios/autenticacion/src/principal.ts ***!
+  \**************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const dotenv = __importStar(__webpack_require__(/*! dotenv */ "dotenv"));
+dotenv.config();
+const core_1 = __webpack_require__(/*! @nestjs/core */ "@nestjs/core");
+const microservices_1 = __webpack_require__(/*! @nestjs/microservices */ "@nestjs/microservices");
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const autenticacion_module_1 = __webpack_require__(/*! ./autenticacion.module */ "./servicios/autenticacion/src/autenticacion.module.ts");
+const registrador = new common_1.Logger('ServicioAutenticacion');
+async function iniciar() {
+    const puerto = parseInt(process.env.PUERTO_AUTENTICACION ?? '5001', 10);
+    const aplicacion = await core_1.NestFactory.createMicroservice(autenticacion_module_1.ModuloAutenticacion, {
+        transport: microservices_1.Transport.TCP,
+        options: {
+            host: '0.0.0.0',
+            port: puerto,
+        },
+    });
+    await aplicacion.listen();
+    registrador.log(`🔐 Servicio de Autenticación escuchando en puerto ${puerto} (TCP)`);
+}
+iniciar();
 
 
 /***/ }),
@@ -521,6 +794,16 @@ module.exports = require("@nestjs/core");
 
 /***/ }),
 
+/***/ "@nestjs/jwt":
+/*!******************************!*\
+  !*** external "@nestjs/jwt" ***!
+  \******************************/
+/***/ ((module) => {
+
+module.exports = require("@nestjs/jwt");
+
+/***/ }),
+
 /***/ "@nestjs/microservices":
 /*!****************************************!*\
   !*** external "@nestjs/microservices" ***!
@@ -579,6 +862,16 @@ module.exports = require("class-transformer");
 
 module.exports = require("class-validator");
 
+/***/ }),
+
+/***/ "dotenv":
+/*!*************************!*\
+  !*** external "dotenv" ***!
+  \*************************/
+/***/ ((module) => {
+
+module.exports = require("dotenv");
+
 /***/ })
 
 /******/ 	});
@@ -608,35 +901,11 @@ module.exports = require("class-validator");
 /******/ 	}
 /******/ 	
 /************************************************************************/
-var __webpack_exports__ = {};
-// This entry needs to be wrapped in an IIFE because it needs to be isolated against other modules in the chunk.
-(() => {
-var exports = __webpack_exports__;
-/*!**************************************************!*\
-  !*** ./servicios/autenticacion/src/principal.ts ***!
-  \**************************************************/
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-const core_1 = __webpack_require__(/*! @nestjs/core */ "@nestjs/core");
-const microservices_1 = __webpack_require__(/*! @nestjs/microservices */ "@nestjs/microservices");
-const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
-const autenticacion_module_1 = __webpack_require__(/*! ./autenticacion.module */ "./servicios/autenticacion/src/autenticacion.module.ts");
-const registrador = new common_1.Logger('ServicioAutenticacion');
-async function iniciar() {
-    const puerto = parseInt(process.env.PUERTO_AUTENTICACION ?? '5001', 10);
-    const aplicacion = await core_1.NestFactory.createMicroservice(autenticacion_module_1.ModuloAutenticacion, {
-        transport: microservices_1.Transport.TCP,
-        options: {
-            host: '0.0.0.0',
-            port: puerto,
-        },
-    });
-    await aplicacion.listen();
-    registrador.log(`🔐 Servicio de Autenticación escuchando en puerto ${puerto} (TCP)`);
-}
-iniciar();
-
-})();
-
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module is referenced by other modules so it can't be inlined
+/******/ 	var __webpack_exports__ = __webpack_require__("./servicios/autenticacion/src/principal.ts");
+/******/ 	
 /******/ })()
 ;

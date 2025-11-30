@@ -3,6 +3,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ModuloProductos } from './productos/productos.module';
+import { Producto } from './productos/producto.entidad';
+import { Reserva } from './productos/reserva.entidad';
 
 @Module({
   imports: [
@@ -23,9 +25,9 @@ import { ModuloProductos } from './productos/productos.module';
         username: configuracion.get('BD_USUARIO', 'root'),
         password: configuracion.get('BD_CLAVE', ''),
         database: configuracion.get('BD_NOMBRE', 'productos_bd'),
-        entities: [__dirname + '/**/*.entidad{.ts,.js}'],
+        entities: [Producto, Reserva],
         synchronize: configuracion.get('BD_SINCRONIZAR', 'true') === 'true',
-        logging: false,
+        logging: true,
       }),
     }),
 

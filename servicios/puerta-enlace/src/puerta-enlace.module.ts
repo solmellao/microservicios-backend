@@ -5,6 +5,8 @@ import { ModuloAcceso } from './acceso/acceso.module';
 import { ControladorProductos } from './controladores/productos.controller';
 import { ControladorCarrito } from './controladores/carrito.controller';
 import { ControladorPedidos } from './controladores/pedidos.controller';
+import { ModuloUsuarios } from './controladores/usuario.module';
+
 
 @Module({
   imports: [
@@ -13,6 +15,9 @@ import { ControladorPedidos } from './controladores/pedidos.controller';
     
     // Módulo de autenticación y JWT
     ModuloAcceso,
+
+    // Módulo de usuarios (perfil, registro, etc)
+    ModuloUsuarios,  // ← AGREGAR ESTA LÍNEA
 
     // Clientes TCP para comunicarse con los microservicios
     ClientsModule.register([
@@ -42,6 +47,8 @@ import { ControladorPedidos } from './controladores/pedidos.controller';
       },
     ]),
   ],
+
+  
   controllers: [
     ControladorProductos,
     ControladorCarrito,
