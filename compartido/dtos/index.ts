@@ -8,3 +8,6 @@ export * from './registrar-usuario.dto';
 export * from './producto.dto';
 export * from './compra.dto';
 
+// Nuevos exports 
+export * from './actualizar-producto.dto';
+export * from './actualizar-usuario.dto';

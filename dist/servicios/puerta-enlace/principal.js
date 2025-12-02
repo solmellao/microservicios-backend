@@ -2,6 +2,112 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./compartido/dtos/actualizar-producto.dto.ts":
+/*!****************************************************!*\
+  !*** ./compartido/dtos/actualizar-producto.dto.ts ***!
+  \****************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ActualizarProductoDto = void 0;
+const class_validator_1 = __webpack_require__(/*! class-validator */ "class-validator");
+const swagger_1 = __webpack_require__(/*! @nestjs/swagger */ "@nestjs/swagger");
+class ActualizarProductoDto {
+    nombre;
+    precio;
+    inventario;
+    imagenUrl;
+}
+exports.ActualizarProductoDto = ActualizarProductoDto;
+__decorate([
+    (0, swagger_1.ApiProperty)({ required: false }),
+    (0, class_validator_1.IsString)({ message: 'El nombre debe ser texto' }),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], ActualizarProductoDto.prototype, "nombre", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ required: false }),
+    (0, class_validator_1.IsNumber)({}, { message: 'El precio debe ser un número' }),
+    (0, class_validator_1.IsPositive)({ message: 'El precio debe ser positivo' }),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Number)
+], ActualizarProductoDto.prototype, "precio", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ required: false }),
+    (0, class_validator_1.IsInt)({ message: 'El inventario debe ser un número entero' }),
+    (0, class_validator_1.Min)(0, { message: 'El inventario no puede ser negativo' }),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Number)
+], ActualizarProductoDto.prototype, "inventario", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ required: false }),
+    (0, class_validator_1.IsString)({ message: 'La imagen debe ser texto' }),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], ActualizarProductoDto.prototype, "imagenUrl", void 0);
+
+
+/***/ }),
+
+/***/ "./compartido/dtos/actualizar-usuario.dto.ts":
+/*!***************************************************!*\
+  !*** ./compartido/dtos/actualizar-usuario.dto.ts ***!
+  \***************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ActualizarUsuarioDto = void 0;
+const class_validator_1 = __webpack_require__(/*! class-validator */ "class-validator");
+const swagger_1 = __webpack_require__(/*! @nestjs/swagger */ "@nestjs/swagger");
+class ActualizarUsuarioDto {
+    nombre;
+    imagenUrl;
+}
+exports.ActualizarUsuarioDto = ActualizarUsuarioDto;
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        required: false,
+        example: 'Juan Pérez',
+        description: 'Nombre completo del usuario'
+    }),
+    (0, class_validator_1.IsString)({ message: 'El nombre debe ser texto' }),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], ActualizarUsuarioDto.prototype, "nombre", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        required: false,
+        example: 'uploads/usuarios/abc-123-def.jpg',
+        description: 'URL de la imagen del usuario'
+    }),
+    (0, class_validator_1.IsString)({ message: 'La imagen debe ser texto' }),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], ActualizarUsuarioDto.prototype, "imagenUrl", void 0);
+
+
+/***/ }),
+
 /***/ "./compartido/dtos/compra.dto.ts":
 /*!***************************************!*\
   !*** ./compartido/dtos/compra.dto.ts ***!
@@ -90,6 +196,8 @@ __exportStar(__webpack_require__(/*! ./iniciar-sesion.dto */ "./compartido/dtos/
 __exportStar(__webpack_require__(/*! ./registrar-usuario.dto */ "./compartido/dtos/registrar-usuario.dto.ts"), exports);
 __exportStar(__webpack_require__(/*! ./producto.dto */ "./compartido/dtos/producto.dto.ts"), exports);
 __exportStar(__webpack_require__(/*! ./compra.dto */ "./compartido/dtos/compra.dto.ts"), exports);
+__exportStar(__webpack_require__(/*! ./actualizar-producto.dto */ "./compartido/dtos/actualizar-producto.dto.ts"), exports);
+__exportStar(__webpack_require__(/*! ./actualizar-usuario.dto */ "./compartido/dtos/actualizar-usuario.dto.ts"), exports);
 
 
 /***/ }),
@@ -164,6 +272,7 @@ class CrearProductoDto {
     nombre;
     precio;
     inventario;
+    imagenUrl;
 }
 exports.CrearProductoDto = CrearProductoDto;
 __decorate([
@@ -192,6 +301,16 @@ __decorate([
     (0, class_validator_1.Min)(0, { message: 'El inventario no puede ser negativo' }),
     __metadata("design:type", Number)
 ], CrearProductoDto.prototype, "inventario", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        example: 'uploads/productos/abc123.jpg',
+        description: 'URL de la imagen del producto',
+        required: false
+    }),
+    (0, class_validator_1.IsString)({ message: 'La imagen debe ser texto' }),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], CrearProductoDto.prototype, "imagenUrl", void 0);
 class ReservarProductoDto {
     idProducto;
     idUsuario;
@@ -284,6 +403,85 @@ __decorate([
     (0, class_validator_1.MinLength)(6, { message: 'La contraseña debe tener al menos 6 caracteres' }),
     __metadata("design:type", String)
 ], RegistrarUsuarioDto.prototype, "clave", void 0);
+
+
+/***/ }),
+
+/***/ "./compartido/helpers/image-storage.helper.ts":
+/*!****************************************************!*\
+  !*** ./compartido/helpers/image-storage.helper.ts ***!
+  \****************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.removeFile = exports.saveImagesToStorage = void 0;
+const multer_1 = __webpack_require__(/*! multer */ "multer");
+const uuid_1 = __webpack_require__(/*! uuid */ "uuid");
+const fs = __importStar(__webpack_require__(/*! fs */ "fs"));
+const path = __importStar(__webpack_require__(/*! path */ "path"));
+const validMimeType = ['image/png', 'image/jpg', 'image/jpeg'];
+const saveImagesToStorage = (destination) => {
+    return {
+        storage: (0, multer_1.diskStorage)({
+            destination: `./uploads/${destination}`,
+            filename: (req, file, callback) => {
+                const fileExtension = path.extname(file.originalname);
+                const filename = (0, uuid_1.v4)() + fileExtension;
+                callback(null, filename);
+            },
+        }),
+        fileFilter: (req, file, callback) => {
+            const allowedMimeTypes = validMimeType;
+            allowedMimeTypes.includes(file.mimetype)
+                ? callback(null, true)
+                : callback(null, false);
+        },
+    };
+};
+exports.saveImagesToStorage = saveImagesToStorage;
+const removeFile = (fullFilePath) => {
+    try {
+        fs.unlinkSync(fullFilePath);
+    }
+    catch (e) {
+        console.error(new Date(), e);
+    }
+};
+exports.removeFile = removeFile;
 
 
 /***/ }),
@@ -647,10 +845,10 @@ exports.GuardiaJwt = GuardiaJwt = __decorate([
 
 /***/ }),
 
-/***/ "./servicios/puerta-enlace/src/controladores/carrito.controller.ts":
-/*!*************************************************************************!*\
-  !*** ./servicios/puerta-enlace/src/controladores/carrito.controller.ts ***!
-  \*************************************************************************/
+/***/ "./servicios/puerta-enlace/src/controladores/pe.carrito.controller.ts":
+/*!****************************************************************************!*\
+  !*** ./servicios/puerta-enlace/src/controladores/pe.carrito.controller.ts ***!
+  \****************************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -777,10 +975,10 @@ exports.ControladorCarrito = ControladorCarrito = __decorate([
 
 /***/ }),
 
-/***/ "./servicios/puerta-enlace/src/controladores/pedidos.controller.ts":
-/*!*************************************************************************!*\
-  !*** ./servicios/puerta-enlace/src/controladores/pedidos.controller.ts ***!
-  \*************************************************************************/
+/***/ "./servicios/puerta-enlace/src/controladores/pe.pedidos.controller.ts":
+/*!****************************************************************************!*\
+  !*** ./servicios/puerta-enlace/src/controladores/pe.pedidos.controller.ts ***!
+  \****************************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -883,10 +1081,10 @@ exports.ControladorPedidos = ControladorPedidos = __decorate([
 
 /***/ }),
 
-/***/ "./servicios/puerta-enlace/src/controladores/productos.controller.ts":
-/*!***************************************************************************!*\
-  !*** ./servicios/puerta-enlace/src/controladores/productos.controller.ts ***!
-  \***************************************************************************/
+/***/ "./servicios/puerta-enlace/src/controladores/pe.productos.controller.ts":
+/*!******************************************************************************!*\
+  !*** ./servicios/puerta-enlace/src/controladores/pe.productos.controller.ts ***!
+  \******************************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -907,46 +1105,46 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ControladorProductos = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const microservices_1 = __webpack_require__(/*! @nestjs/microservices */ "@nestjs/microservices");
-const swagger_1 = __webpack_require__(/*! @nestjs/swagger */ "@nestjs/swagger");
-const rxjs_1 = __webpack_require__(/*! rxjs */ "rxjs");
 const jwt_guardia_1 = __webpack_require__(/*! ../acceso/jwt.guardia */ "./servicios/puerta-enlace/src/acceso/jwt.guardia.ts");
+const rxjs_1 = __webpack_require__(/*! rxjs */ "rxjs");
 const dtos_1 = __webpack_require__(/*! @compartido/dtos */ "./compartido/dtos/index.ts");
+const swagger_1 = __webpack_require__(/*! @nestjs/swagger */ "@nestjs/swagger");
 let ControladorProductos = class ControladorProductos {
     clienteCatalogo;
     constructor(clienteCatalogo) {
         this.clienteCatalogo = clienteCatalogo;
     }
     async obtenerTodos() {
-        return (0, rxjs_1.firstValueFrom)(this.clienteCatalogo.send({ cmd: 'obtener_todos_productos' }, {}));
+        return this.clienteCatalogo
+            .send({ cmd: 'obtener_todos_productos' }, {})
+            .pipe((0, rxjs_1.catchError)((rpcError) => {
+            const { statusCode = 500, error } = rpcError;
+            throw new common_1.HttpException(error ?? rpcError, statusCode);
+        }));
     }
-    async crear(crearProductoDto, solicitud) {
-        if (solicitud.user.rol !== 'ADMIN') {
-            throw new common_1.UnauthorizedException('Acceso denegado. Se requiere rol de Administrador.');
-        }
-        return (0, rxjs_1.firstValueFrom)(this.clienteCatalogo.send({ cmd: 'crear_producto' }, crearProductoDto));
+    async crear(dto) {
+        return this.clienteCatalogo
+            .send({ cmd: 'crear_producto' }, dto)
+            .pipe((0, rxjs_1.catchError)((rpcError) => {
+            const { statusCode = 500, error } = rpcError;
+            throw new common_1.HttpException(error ?? rpcError, statusCode);
+        }));
     }
 };
 exports.ControladorProductos = ControladorProductos;
 __decorate([
     (0, common_1.Get)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Obtener todos los productos del catálogo' }),
-    (0, swagger_1.ApiResponse)({ status: 200, description: 'Lista de productos retornada exitosamente' }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], ControladorProductos.prototype, "obtenerTodos", null);
 __decorate([
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, common_1.UseGuards)(jwt_guardia_1.GuardiaJwt),
     (0, common_1.Post)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Crear un nuevo producto (Solo ADMIN)' }),
-    (0, swagger_1.ApiResponse)({ status: 201, description: 'Producto creado exitosamente' }),
-    (0, swagger_1.ApiResponse)({ status: 401, description: 'No autorizado - Token inválido' }),
-    (0, swagger_1.ApiResponse)({ status: 403, description: 'Prohibido - Requiere rol ADMIN' }),
+    (0, common_1.UseGuards)(jwt_guardia_1.GuardiaJwt),
+    (0, swagger_1.ApiBearerAuth)('JWT-auth'),
     __param(0, (0, common_1.Body)()),
-    __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [typeof (_b = typeof dtos_1.CrearProductoDto !== "undefined" && dtos_1.CrearProductoDto) === "function" ? _b : Object, Object]),
+    __metadata("design:paramtypes", [typeof (_b = typeof dtos_1.CrearProductoDto !== "undefined" && dtos_1.CrearProductoDto) === "function" ? _b : Object]),
     __metadata("design:returntype", Promise)
 ], ControladorProductos.prototype, "crear", null);
 exports.ControladorProductos = ControladorProductos = __decorate([
@@ -959,99 +1157,171 @@ exports.ControladorProductos = ControladorProductos = __decorate([
 
 /***/ }),
 
-/***/ "./servicios/puerta-enlace/src/controladores/usuario.controller.ts":
-/*!*************************************************************************!*\
-  !*** ./servicios/puerta-enlace/src/controladores/usuario.controller.ts ***!
-  \*************************************************************************/
+/***/ "./servicios/puerta-enlace/src/controladores/pe.usuario.controller.ts":
+/*!****************************************************************************!*\
+  !*** ./servicios/puerta-enlace/src/controladores/pe.usuario.controller.ts ***!
+  \****************************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-var _a;
+var _a, _b, _c;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.ControladorUsuarios = void 0;
+exports.ControladorUsuario = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
-const swagger_1 = __webpack_require__(/*! @nestjs/swagger */ "@nestjs/swagger");
+const platform_express_1 = __webpack_require__(/*! @nestjs/platform-express */ "@nestjs/platform-express");
+const microservices_1 = __webpack_require__(/*! @nestjs/microservices */ "@nestjs/microservices");
 const jwt_guardia_1 = __webpack_require__(/*! ../acceso/jwt.guardia */ "./servicios/puerta-enlace/src/acceso/jwt.guardia.ts");
-const usuarios_service_1 = __webpack_require__(/*! ./usuarios.service */ "./servicios/puerta-enlace/src/controladores/usuarios.service.ts");
-let ControladorUsuarios = class ControladorUsuarios {
-    servicioUsuarios;
-    constructor(servicioUsuarios) {
-        this.servicioUsuarios = servicioUsuarios;
+const rxjs_1 = __webpack_require__(/*! rxjs */ "rxjs");
+const image_storage_helper_1 = __webpack_require__(/*! @compartido/helpers/image-storage.helper */ "./compartido/helpers/image-storage.helper.ts");
+const path = __importStar(__webpack_require__(/*! path */ "path"));
+const rxjs_2 = __webpack_require__(/*! rxjs */ "rxjs");
+const swagger_1 = __webpack_require__(/*! @nestjs/swagger */ "@nestjs/swagger");
+let ControladorUsuario = class ControladorUsuario {
+    clienteAutenticacion;
+    constructor(clienteAutenticacion) {
+        this.clienteAutenticacion = clienteAutenticacion;
     }
     async obtenerPerfil(req) {
-        const usuario = req.user;
-        return this.servicioUsuarios.obtenerPorId(usuario.id);
+        return this.clienteAutenticacion
+            .send({ cmd: 'obtener_usuario_por_id' }, req.user.id)
+            .pipe((0, rxjs_1.catchError)((rpcError) => {
+            const { statusCode = 500, error } = rpcError;
+            throw new common_1.HttpException(error ?? rpcError, statusCode);
+        }));
     }
-    async actualizarPerfil(req, datos) {
-        const usuario = req.user;
-        return this.servicioUsuarios.actualizarPerfil(usuario.id, datos);
+    async actualizarPerfil(req, dto, file) {
+        try {
+            if (file) {
+                const usuarioActual = await (0, rxjs_2.firstValueFrom)(this.clienteAutenticacion.send({ cmd: 'obtener_usuario_por_id' }, req.user.id));
+                if (usuarioActual.imagenUrl && !usuarioActual.imagenUrl.startsWith('http')) {
+                    const oldImagePath = path.join(process.cwd(), usuarioActual.imagenUrl);
+                    (0, image_storage_helper_1.removeFile)(oldImagePath);
+                }
+                dto.imagenUrl = `uploads/usuarios/${file.filename}`;
+            }
+            return this.clienteAutenticacion
+                .send({ cmd: 'actualizar_usuario' }, { id: req.user.id, dto })
+                .pipe((0, rxjs_1.catchError)((rpcError) => {
+                if (file) {
+                    const fullPath = path.join(process.cwd(), 'uploads', 'usuarios', file.filename);
+                    (0, image_storage_helper_1.removeFile)(fullPath);
+                }
+                const { statusCode = 500, error } = rpcError;
+                throw new common_1.HttpException(error ?? rpcError, statusCode);
+            }));
+        }
+        catch (error) {
+            if (file) {
+                const fullPath = path.join(process.cwd(), 'uploads', 'usuarios', file.filename);
+                (0, image_storage_helper_1.removeFile)(fullPath);
+            }
+            throw error;
+        }
     }
-    async cambiarClave(req, datos) {
-        const usuario = req.user;
-        await this.servicioUsuarios.cambiarClave(usuario.id, datos.claveActual, datos.claveNueva);
-        return {
-            mensaje: 'Contraseña actualizada exitosamente',
-        };
+    async cambiarClave(req, dto) {
+        return this.clienteAutenticacion
+            .send({ cmd: 'cambiar_clave' }, {
+            id: req.user.id,
+            claveActual: dto.claveActual,
+            claveNueva: dto.claveNueva,
+        })
+            .pipe((0, rxjs_1.catchError)((rpcError) => {
+            const { statusCode = 500, error } = rpcError;
+            throw new common_1.HttpException(error ?? rpcError, statusCode);
+        }));
     }
 };
-exports.ControladorUsuarios = ControladorUsuarios;
+exports.ControladorUsuario = ControladorUsuario;
 __decorate([
     (0, common_1.Get)('perfil'),
-    (0, swagger_1.ApiOperation)({ summary: 'Obtener perfil del usuario autenticado' }),
-    (0, swagger_1.ApiResponse)({ status: 200, description: 'Perfil del usuario' }),
+    (0, common_1.UseGuards)(jwt_guardia_1.GuardiaJwt),
+    (0, swagger_1.ApiBearerAuth)('JWT-auth'),
     __param(0, (0, common_1.Request)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
-], ControladorUsuarios.prototype, "obtenerPerfil", null);
+], ControladorUsuario.prototype, "obtenerPerfil", null);
 __decorate([
     (0, common_1.Put)('perfil'),
-    (0, swagger_1.ApiOperation)({ summary: 'Actualizar perfil del usuario' }),
-    (0, swagger_1.ApiResponse)({ status: 200, description: 'Perfil actualizado' }),
+    (0, common_1.UseGuards)(jwt_guardia_1.GuardiaJwt),
+    (0, swagger_1.ApiBearerAuth)('JWT-auth'),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('imagen', (0, image_storage_helper_1.saveImagesToStorage)('usuarios'))),
     __param(0, (0, common_1.Request)()),
     __param(1, (0, common_1.Body)()),
+    __param(2, (0, common_1.UploadedFile)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:paramtypes", [Object, Object, typeof (_c = typeof Express !== "undefined" && (_b = Express.Multer) !== void 0 && _b.File) === "function" ? _c : Object]),
     __metadata("design:returntype", Promise)
-], ControladorUsuarios.prototype, "actualizarPerfil", null);
+], ControladorUsuario.prototype, "actualizarPerfil", null);
 __decorate([
     (0, common_1.Put)('cambiar-clave'),
-    (0, swagger_1.ApiOperation)({ summary: 'Cambiar contraseña del usuario' }),
-    (0, swagger_1.ApiResponse)({ status: 200, description: 'Contraseña actualizada' }),
-    (0, swagger_1.ApiResponse)({ status: 401, description: 'Contraseña actual incorrecta' }),
+    (0, common_1.UseGuards)(jwt_guardia_1.GuardiaJwt),
+    (0, swagger_1.ApiBearerAuth)('JWT-auth'),
     __param(0, (0, common_1.Request)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
-], ControladorUsuarios.prototype, "cambiarClave", null);
-exports.ControladorUsuarios = ControladorUsuarios = __decorate([
-    (0, swagger_1.ApiTags)('👤 Usuarios'),
-    (0, swagger_1.ApiBearerAuth)('JWT-auth'),
-    (0, common_1.UseGuards)(jwt_guardia_1.GuardiaJwt),
-    (0, common_1.Controller)('usuarios'),
-    __metadata("design:paramtypes", [typeof (_a = typeof usuarios_service_1.ServicioUsuarios !== "undefined" && usuarios_service_1.ServicioUsuarios) === "function" ? _a : Object])
-], ControladorUsuarios);
+], ControladorUsuario.prototype, "cambiarClave", null);
+exports.ControladorUsuario = ControladorUsuario = __decorate([
+    (0, swagger_1.ApiTags)('Usuario'),
+    (0, common_1.Controller)('usuario'),
+    __param(0, (0, common_1.Inject)('SERVICIO_AUTENTICACION')),
+    __metadata("design:paramtypes", [typeof (_a = typeof microservices_1.ClientProxy !== "undefined" && microservices_1.ClientProxy) === "function" ? _a : Object])
+], ControladorUsuario);
 
 
 /***/ }),
 
-/***/ "./servicios/puerta-enlace/src/controladores/usuario.module.ts":
-/*!*********************************************************************!*\
-  !*** ./servicios/puerta-enlace/src/controladores/usuario.module.ts ***!
-  \*********************************************************************/
+/***/ "./servicios/puerta-enlace/src/controladores/pe.usuario.module.ts":
+/*!************************************************************************!*\
+  !*** ./servicios/puerta-enlace/src/controladores/pe.usuario.module.ts ***!
+  \************************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -1067,8 +1337,7 @@ const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const jwt_1 = __webpack_require__(/*! @nestjs/jwt */ "@nestjs/jwt");
 const config_1 = __webpack_require__(/*! @nestjs/config */ "@nestjs/config");
 const microservices_1 = __webpack_require__(/*! @nestjs/microservices */ "@nestjs/microservices");
-const usuario_controller_1 = __webpack_require__(/*! ./usuario.controller */ "./servicios/puerta-enlace/src/controladores/usuario.controller.ts");
-const usuarios_service_1 = __webpack_require__(/*! ./usuarios.service */ "./servicios/puerta-enlace/src/controladores/usuarios.service.ts");
+const pe_usuario_controller_1 = __webpack_require__(/*! ./pe.usuario.controller */ "./servicios/puerta-enlace/src/controladores/pe.usuario.controller.ts");
 let ModuloUsuarios = class ModuloUsuarios {
 };
 exports.ModuloUsuarios = ModuloUsuarios;
@@ -1097,87 +1366,10 @@ exports.ModuloUsuarios = ModuloUsuarios = __decorate([
                 },
             ]),
         ],
-        controllers: [usuario_controller_1.ControladorUsuarios],
-        providers: [usuarios_service_1.ServicioUsuarios],
+        controllers: [pe_usuario_controller_1.ControladorUsuario],
+        providers: [],
     })
 ], ModuloUsuarios);
-
-
-/***/ }),
-
-/***/ "./servicios/puerta-enlace/src/controladores/usuarios.service.ts":
-/*!***********************************************************************!*\
-  !*** ./servicios/puerta-enlace/src/controladores/usuarios.service.ts ***!
-  \***********************************************************************/
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var _a;
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.ServicioUsuarios = void 0;
-const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
-const microservices_1 = __webpack_require__(/*! @nestjs/microservices */ "@nestjs/microservices");
-const rxjs_1 = __webpack_require__(/*! rxjs */ "rxjs");
-let ServicioUsuarios = class ServicioUsuarios {
-    clienteAutenticacion;
-    constructor(clienteAutenticacion) {
-        this.clienteAutenticacion = clienteAutenticacion;
-    }
-    async obtenerPorId(id) {
-        try {
-            const usuario = await (0, rxjs_1.firstValueFrom)(this.clienteAutenticacion.send({ cmd: 'obtener-usuario-por-id' }, { id }));
-            const { clave, ...usuarioSinClave } = usuario;
-            return usuarioSinClave;
-        }
-        catch (error) {
-            console.error('Error al obtener usuario:', error);
-            throw error;
-        }
-    }
-    async actualizarPerfil(id, datos) {
-        try {
-            const usuario = await (0, rxjs_1.firstValueFrom)(this.clienteAutenticacion.send({ cmd: 'actualizar-usuario' }, { id, datos }));
-            const { clave, ...usuarioSinClave } = usuario;
-            return usuarioSinClave;
-        }
-        catch (error) {
-            console.error('Error al actualizar perfil:', error);
-            throw error;
-        }
-    }
-    async cambiarClave(id, claveActual, claveNueva) {
-        try {
-            const resultado = await (0, rxjs_1.firstValueFrom)(this.clienteAutenticacion.send({ cmd: 'verificar-clave' }, { id, clave: claveActual }));
-            if (!resultado.valida) {
-                throw new common_1.UnauthorizedException('Contraseña actual incorrecta');
-            }
-            await (0, rxjs_1.firstValueFrom)(this.clienteAutenticacion.send({ cmd: 'cambiar-clave' }, { id, claveNueva }));
-            return { mensaje: 'Contraseña actualizada' };
-        }
-        catch (error) {
-            console.error('Error al cambiar contraseña:', error);
-            throw error;
-        }
-    }
-};
-exports.ServicioUsuarios = ServicioUsuarios;
-exports.ServicioUsuarios = ServicioUsuarios = __decorate([
-    (0, common_1.Injectable)(),
-    __param(0, (0, common_1.Inject)('SERVICIO_AUTENTICACION')),
-    __metadata("design:paramtypes", [typeof (_a = typeof microservices_1.ClientProxy !== "undefined" && microservices_1.ClientProxy) === "function" ? _a : Object])
-], ServicioUsuarios);
 
 
 /***/ }),
@@ -1200,11 +1392,13 @@ exports.ModuloPuertaEnlace = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const config_1 = __webpack_require__(/*! @nestjs/config */ "@nestjs/config");
 const microservices_1 = __webpack_require__(/*! @nestjs/microservices */ "@nestjs/microservices");
+const platform_express_1 = __webpack_require__(/*! @nestjs/platform-express */ "@nestjs/platform-express");
 const acceso_module_1 = __webpack_require__(/*! ./acceso/acceso.module */ "./servicios/puerta-enlace/src/acceso/acceso.module.ts");
-const productos_controller_1 = __webpack_require__(/*! ./controladores/productos.controller */ "./servicios/puerta-enlace/src/controladores/productos.controller.ts");
-const carrito_controller_1 = __webpack_require__(/*! ./controladores/carrito.controller */ "./servicios/puerta-enlace/src/controladores/carrito.controller.ts");
-const pedidos_controller_1 = __webpack_require__(/*! ./controladores/pedidos.controller */ "./servicios/puerta-enlace/src/controladores/pedidos.controller.ts");
-const usuario_module_1 = __webpack_require__(/*! ./controladores/usuario.module */ "./servicios/puerta-enlace/src/controladores/usuario.module.ts");
+const pe_productos_controller_1 = __webpack_require__(/*! ./controladores/pe.productos.controller */ "./servicios/puerta-enlace/src/controladores/pe.productos.controller.ts");
+const pe_carrito_controller_1 = __webpack_require__(/*! ./controladores/pe.carrito.controller */ "./servicios/puerta-enlace/src/controladores/pe.carrito.controller.ts");
+const pe_pedidos_controller_1 = __webpack_require__(/*! ./controladores/pe.pedidos.controller */ "./servicios/puerta-enlace/src/controladores/pe.pedidos.controller.ts");
+const pe_usuario_module_1 = __webpack_require__(/*! ./controladores/pe.usuario.module */ "./servicios/puerta-enlace/src/controladores/pe.usuario.module.ts");
+const pe_usuario_controller_1 = __webpack_require__(/*! ./controladores/pe.usuario.controller */ "./servicios/puerta-enlace/src/controladores/pe.usuario.controller.ts");
 let ModuloPuertaEnlace = class ModuloPuertaEnlace {
 };
 exports.ModuloPuertaEnlace = ModuloPuertaEnlace;
@@ -1212,8 +1406,11 @@ exports.ModuloPuertaEnlace = ModuloPuertaEnlace = __decorate([
     (0, common_1.Module)({
         imports: [
             config_1.ConfigModule.forRoot({ isGlobal: true }),
+            platform_express_1.MulterModule.register({
+                dest: './uploads',
+            }),
             acceso_module_1.ModuloAcceso,
-            usuario_module_1.ModuloUsuarios,
+            pe_usuario_module_1.ModuloUsuarios,
             microservices_1.ClientsModule.register([
                 {
                     name: 'SERVICIO_AUTENTICACION',
@@ -1242,9 +1439,10 @@ exports.ModuloPuertaEnlace = ModuloPuertaEnlace = __decorate([
             ]),
         ],
         controllers: [
-            productos_controller_1.ControladorProductos,
-            carrito_controller_1.ControladorCarrito,
-            pedidos_controller_1.ControladorPedidos,
+            pe_productos_controller_1.ControladorProductos,
+            pe_carrito_controller_1.ControladorCarrito,
+            pe_pedidos_controller_1.ControladorPedidos,
+            pe_usuario_controller_1.ControladorUsuario,
         ],
     })
 ], ModuloPuertaEnlace);
@@ -1312,6 +1510,16 @@ module.exports = require("@nestjs/passport");
 
 /***/ }),
 
+/***/ "@nestjs/platform-express":
+/*!*******************************************!*\
+  !*** external "@nestjs/platform-express" ***!
+  \*******************************************/
+/***/ ((module) => {
+
+module.exports = require("@nestjs/platform-express");
+
+/***/ }),
+
 /***/ "@nestjs/swagger":
 /*!**********************************!*\
   !*** external "@nestjs/swagger" ***!
@@ -1342,6 +1550,26 @@ module.exports = require("class-validator");
 
 /***/ }),
 
+/***/ "fs":
+/*!*********************!*\
+  !*** external "fs" ***!
+  \*********************/
+/***/ ((module) => {
+
+module.exports = require("fs");
+
+/***/ }),
+
+/***/ "multer":
+/*!*************************!*\
+  !*** external "multer" ***!
+  \*************************/
+/***/ ((module) => {
+
+module.exports = require("multer");
+
+/***/ }),
+
 /***/ "passport-jwt":
 /*!*******************************!*\
   !*** external "passport-jwt" ***!
@@ -1369,6 +1597,16 @@ module.exports = require("path");
 /***/ ((module) => {
 
 module.exports = require("rxjs");
+
+/***/ }),
+
+/***/ "uuid":
+/*!***********************!*\
+  !*** external "uuid" ***!
+  \***********************/
+/***/ ((module) => {
+
+module.exports = require("uuid");
 
 /***/ })
 
@@ -1420,6 +1658,9 @@ async function iniciar() {
         credentials: true,
     });
     app.useStaticAssets((0, path_1.join)(__dirname, '..', 'public'));
+    app.useStaticAssets((0, path_1.join)(__dirname, '..', '..', '..', 'uploads'), {
+        prefix: '/uploads/',
+    });
     app.useGlobalPipes(new common_1.ValidationPipe({
         whitelist: true,
         forbidNonWhitelisted: true,

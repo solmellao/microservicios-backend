@@ -2,6 +2,112 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./compartido/dtos/actualizar-producto.dto.ts":
+/*!****************************************************!*\
+  !*** ./compartido/dtos/actualizar-producto.dto.ts ***!
+  \****************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ActualizarProductoDto = void 0;
+const class_validator_1 = __webpack_require__(/*! class-validator */ "class-validator");
+const swagger_1 = __webpack_require__(/*! @nestjs/swagger */ "@nestjs/swagger");
+class ActualizarProductoDto {
+    nombre;
+    precio;
+    inventario;
+    imagenUrl;
+}
+exports.ActualizarProductoDto = ActualizarProductoDto;
+__decorate([
+    (0, swagger_1.ApiProperty)({ required: false }),
+    (0, class_validator_1.IsString)({ message: 'El nombre debe ser texto' }),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], ActualizarProductoDto.prototype, "nombre", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ required: false }),
+    (0, class_validator_1.IsNumber)({}, { message: 'El precio debe ser un número' }),
+    (0, class_validator_1.IsPositive)({ message: 'El precio debe ser positivo' }),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Number)
+], ActualizarProductoDto.prototype, "precio", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ required: false }),
+    (0, class_validator_1.IsInt)({ message: 'El inventario debe ser un número entero' }),
+    (0, class_validator_1.Min)(0, { message: 'El inventario no puede ser negativo' }),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Number)
+], ActualizarProductoDto.prototype, "inventario", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ required: false }),
+    (0, class_validator_1.IsString)({ message: 'La imagen debe ser texto' }),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], ActualizarProductoDto.prototype, "imagenUrl", void 0);
+
+
+/***/ }),
+
+/***/ "./compartido/dtos/actualizar-usuario.dto.ts":
+/*!***************************************************!*\
+  !*** ./compartido/dtos/actualizar-usuario.dto.ts ***!
+  \***************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ActualizarUsuarioDto = void 0;
+const class_validator_1 = __webpack_require__(/*! class-validator */ "class-validator");
+const swagger_1 = __webpack_require__(/*! @nestjs/swagger */ "@nestjs/swagger");
+class ActualizarUsuarioDto {
+    nombre;
+    imagenUrl;
+}
+exports.ActualizarUsuarioDto = ActualizarUsuarioDto;
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        required: false,
+        example: 'Juan Pérez',
+        description: 'Nombre completo del usuario'
+    }),
+    (0, class_validator_1.IsString)({ message: 'El nombre debe ser texto' }),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], ActualizarUsuarioDto.prototype, "nombre", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        required: false,
+        example: 'uploads/usuarios/abc-123-def.jpg',
+        description: 'URL de la imagen del usuario'
+    }),
+    (0, class_validator_1.IsString)({ message: 'La imagen debe ser texto' }),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], ActualizarUsuarioDto.prototype, "imagenUrl", void 0);
+
+
+/***/ }),
+
 /***/ "./compartido/dtos/compra.dto.ts":
 /*!***************************************!*\
   !*** ./compartido/dtos/compra.dto.ts ***!
@@ -90,6 +196,8 @@ __exportStar(__webpack_require__(/*! ./iniciar-sesion.dto */ "./compartido/dtos/
 __exportStar(__webpack_require__(/*! ./registrar-usuario.dto */ "./compartido/dtos/registrar-usuario.dto.ts"), exports);
 __exportStar(__webpack_require__(/*! ./producto.dto */ "./compartido/dtos/producto.dto.ts"), exports);
 __exportStar(__webpack_require__(/*! ./compra.dto */ "./compartido/dtos/compra.dto.ts"), exports);
+__exportStar(__webpack_require__(/*! ./actualizar-producto.dto */ "./compartido/dtos/actualizar-producto.dto.ts"), exports);
+__exportStar(__webpack_require__(/*! ./actualizar-usuario.dto */ "./compartido/dtos/actualizar-usuario.dto.ts"), exports);
 
 
 /***/ }),
@@ -164,6 +272,7 @@ class CrearProductoDto {
     nombre;
     precio;
     inventario;
+    imagenUrl;
 }
 exports.CrearProductoDto = CrearProductoDto;
 __decorate([
@@ -192,6 +301,16 @@ __decorate([
     (0, class_validator_1.Min)(0, { message: 'El inventario no puede ser negativo' }),
     __metadata("design:type", Number)
 ], CrearProductoDto.prototype, "inventario", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        example: 'uploads/productos/abc123.jpg',
+        description: 'URL de la imagen del producto',
+        required: false
+    }),
+    (0, class_validator_1.IsString)({ message: 'La imagen debe ser texto' }),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], CrearProductoDto.prototype, "imagenUrl", void 0);
 class ReservarProductoDto {
     idProducto;
     idUsuario;
@@ -329,32 +448,94 @@ let ControladorAutenticacion = class ControladorAutenticacion {
                 correo: usuario.correo,
                 nombre: usuario.nombre,
                 rol: usuario.rol,
+                imagenUrl: usuario.imagenUrl,
             },
         };
     }
     async registrarUsuario(datos) {
-        return this.servicioAutenticacion.crearUsuario(datos);
+        try {
+            return await this.servicioAutenticacion.crearUsuario(datos);
+        }
+        catch (error) {
+            const rpcError = {
+                statusCode: error.status || 500,
+                error: error.message || 'Error al registrar usuario',
+            };
+            throw new microservices_1.RpcException(rpcError);
+        }
     }
-    async obtenerUsuarioPorId(datos) {
-        return this.servicioAutenticacion.obtenerUsuarioPorId(datos.id);
+    async obtenerUsuarioPorId(id) {
+        try {
+            return await this.servicioAutenticacion.obtenerUsuarioPorId(id);
+        }
+        catch (error) {
+            const rpcError = {
+                statusCode: 404,
+                error: error.message || 'Usuario no encontrado',
+            };
+            throw new microservices_1.RpcException(rpcError);
+        }
     }
     async actualizarUsuario(datos) {
-        return this.servicioAutenticacion.actualizarUsuario(datos.id, datos.datos);
-    }
-    async verificarClave(datos) {
-        return this.servicioAutenticacion.verificarClave(datos.id, datos.clave);
+        try {
+            return await this.servicioAutenticacion.actualizarUsuario(datos.id, datos.dto);
+        }
+        catch (error) {
+            const rpcError = {
+                statusCode: error.status || 500,
+                error: error.message || 'Error al actualizar usuario',
+            };
+            throw new microservices_1.RpcException(rpcError);
+        }
     }
     async cambiarClave(datos) {
-        return this.servicioAutenticacion.cambiarClave(datos.id, datos.claveNueva);
+        try {
+            await this.servicioAutenticacion.verificarClave(datos.id, datos.claveActual);
+            return await this.servicioAutenticacion.cambiarClave(datos.id, datos.claveNueva);
+        }
+        catch (error) {
+            const rpcError = {
+                statusCode: error.status || 401,
+                error: error.message || 'Error al cambiar contraseña',
+            };
+            throw new microservices_1.RpcException(rpcError);
+        }
     }
     async validarUsuario(datos) {
-        return this.servicioAutenticacion.validarUsuario(datos);
+        try {
+            return await this.servicioAutenticacion.validarUsuario(datos);
+        }
+        catch (error) {
+            const rpcError = {
+                statusCode: 401,
+                error: error.message || 'Credenciales inválidas',
+            };
+            throw new microservices_1.RpcException(rpcError);
+        }
     }
     async obtenerUsuariosPorIds(ids) {
-        return this.servicioAutenticacion.obtenerUsuariosPorIds(ids);
+        try {
+            return await this.servicioAutenticacion.obtenerUsuariosPorIds(ids);
+        }
+        catch (error) {
+            const rpcError = {
+                statusCode: 500,
+                error: error.message || 'Error al obtener usuarios',
+            };
+            throw new microservices_1.RpcException(rpcError);
+        }
     }
     async crearUsuario(datos) {
-        return this.servicioAutenticacion.crearUsuario(datos);
+        try {
+            return await this.servicioAutenticacion.crearUsuario(datos);
+        }
+        catch (error) {
+            const rpcError = {
+                statusCode: error.status || 500,
+                error: error.message || 'Error al crear usuario',
+            };
+            throw new microservices_1.RpcException(rpcError);
+        }
     }
 };
 exports.ControladorAutenticacion = ControladorAutenticacion;
@@ -371,25 +552,19 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ControladorAutenticacion.prototype, "registrarUsuario", null);
 __decorate([
-    (0, microservices_1.MessagePattern)({ cmd: 'obtener-usuario-por-id' }),
+    (0, microservices_1.MessagePattern)({ cmd: 'obtener_usuario_por_id' }),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
 ], ControladorAutenticacion.prototype, "obtenerUsuarioPorId", null);
 __decorate([
-    (0, microservices_1.MessagePattern)({ cmd: 'actualizar-usuario' }),
+    (0, microservices_1.MessagePattern)({ cmd: 'actualizar_usuario' }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], ControladorAutenticacion.prototype, "actualizarUsuario", null);
 __decorate([
-    (0, microservices_1.MessagePattern)({ cmd: 'verificar-clave' }),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], ControladorAutenticacion.prototype, "verificarClave", null);
-__decorate([
-    (0, microservices_1.MessagePattern)({ cmd: 'cambiar-clave' }),
+    (0, microservices_1.MessagePattern)({ cmd: 'cambiar_clave' }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
@@ -541,9 +716,8 @@ let ServicioAutenticacion = class ServicioAutenticacion {
         if (!claveValida) {
             return null;
         }
-        const { claveHash, ...usuarioSinClave } = usuario;
-        console.log(' Payload del token:', usuarioSinClave);
-        return usuarioSinClave;
+        const { claveHash, ...resultado } = usuario;
+        return resultado;
     }
     async generarToken(usuario) {
         const payload = {
@@ -551,97 +725,119 @@ let ServicioAutenticacion = class ServicioAutenticacion {
             correo: usuario.correo,
             nombre: usuario.nombre,
             rol: usuario.rol,
+            imagenUrl: usuario.imagenUrl,
+            fechaCreacion: usuario.fechaCreacion,
+            fechaActualizacion: usuario.fechaActualizacion,
         };
         return this.jwtService.sign(payload);
     }
-    async crearUsuario(datos) {
+    async crearUsuario(dto) {
         const usuarioExistente = await this.prisma.usuario.findUnique({
-            where: { correo: datos.correo },
+            where: { correo: dto.correo },
         });
         if (usuarioExistente) {
             throw new common_1.ConflictException('El correo ya está registrado');
         }
-        const claveEncriptada = await bcrypt.hash(datos.clave, 10);
+        const claveHash = await bcrypt.hash(dto.clave, 10);
         const usuario = await this.prisma.usuario.create({
             data: {
-                nombre: datos.nombre,
-                correo: datos.correo,
-                claveHash: claveEncriptada,
-                rol: datos.rol || 'USUARIO',
+                correo: dto.correo,
+                nombre: dto.nombre,
+                claveHash,
+                rol: dto.rol || 'USUARIO',
+                imagenUrl: dto.imagenUrl || null,
+            },
+            select: {
+                id: true,
+                correo: true,
+                nombre: true,
+                rol: true,
+                imagenUrl: true,
+                fechaCreacion: true,
+                fechaActualizacion: true,
             },
         });
-        const { claveHash, ...usuarioSinClave } = usuario;
-        return usuarioSinClave;
+        return usuario;
     }
     async obtenerUsuarioPorId(id) {
         const usuario = await this.prisma.usuario.findUnique({
             where: { id },
+            select: {
+                id: true,
+                correo: true,
+                nombre: true,
+                rol: true,
+                imagenUrl: true,
+                fechaCreacion: true,
+                fechaActualizacion: true,
+            },
         });
         if (!usuario) {
-            throw new common_1.NotFoundException(`Usuario con ID ${id} no encontrado`);
+            throw new common_1.NotFoundException('Usuario no encontrado');
         }
-        const { claveHash, ...usuarioSinClave } = usuario;
-        return usuarioSinClave;
+        return usuario;
     }
     async obtenerUsuariosPorIds(ids) {
-        const usuarios = await this.prisma.usuario.findMany({
+        if (!ids || ids.length === 0) {
+            return [];
+        }
+        return this.prisma.usuario.findMany({
             where: {
                 id: { in: ids },
             },
+            select: {
+                id: true,
+                correo: true,
+                nombre: true,
+                rol: true,
+                imagenUrl: true,
+                fechaCreacion: true,
+                fechaActualizacion: true,
+            },
         });
-        const mapaUsuarios = {};
-        usuarios.forEach((usuario) => {
-            const { claveHash, ...usuarioSinClave } = usuario;
-            mapaUsuarios[usuario.id] = usuarioSinClave;
-        });
-        return mapaUsuarios;
     }
     async actualizarUsuario(id, datos) {
-        const usuario = await this.prisma.usuario.findUnique({
+        await this.obtenerUsuarioPorId(id);
+        const actualizado = await this.prisma.usuario.update({
             where: { id },
+            data: {
+                nombre: datos.nombre !== undefined ? datos.nombre : undefined,
+                imagenUrl: datos.imagenUrl !== undefined ? datos.imagenUrl : undefined,
+            },
+            select: {
+                id: true,
+                correo: true,
+                nombre: true,
+                rol: true,
+                imagenUrl: true,
+                fechaCreacion: true,
+                fechaActualizacion: true,
+            },
         });
-        if (!usuario) {
-            throw new common_1.NotFoundException(`Usuario con ID ${id} no encontrado`);
-        }
-        if (datos.correo && datos.correo !== usuario.correo) {
-            const correoExistente = await this.prisma.usuario.findUnique({
-                where: { correo: datos.correo },
-            });
-            if (correoExistente) {
-                throw new common_1.ConflictException('El correo ya está en uso');
-            }
-        }
-        const { clave, rol, ...datosActualizables } = datos;
-        const usuarioActualizado = await this.prisma.usuario.update({
-            where: { id },
-            data: datosActualizables,
-        });
-        const { claveHash: _, ...usuarioSinClave } = usuarioActualizado;
-        return usuarioSinClave;
+        return actualizado;
     }
     async verificarClave(id, clave) {
         const usuario = await this.prisma.usuario.findUnique({
             where: { id },
         });
         if (!usuario) {
-            throw new common_1.NotFoundException(`Usuario con ID ${id} no encontrado`);
+            throw new common_1.NotFoundException('Usuario no encontrado');
         }
-        const claveValida = await bcrypt.compare(clave, usuario.claveHash);
-        return { valida: claveValida };
+        const esValida = await bcrypt.compare(clave, usuario.claveHash);
+        if (!esValida) {
+            throw new common_1.UnauthorizedException('Contraseña actual incorrecta');
+        }
+        return true;
     }
     async cambiarClave(id, claveNueva) {
-        const usuario = await this.prisma.usuario.findUnique({
-            where: { id },
-        });
-        if (!usuario) {
-            throw new common_1.NotFoundException(`Usuario con ID ${id} no encontrado`);
-        }
-        const claveEncriptada = await bcrypt.hash(claveNueva, 10);
+        const hash = await bcrypt.hash(claveNueva, 10);
         await this.prisma.usuario.update({
             where: { id },
-            data: { claveHash: claveEncriptada },
+            data: {
+                claveHash: hash,
+            },
         });
-        return { mensaje: 'Contraseña actualizada exitosamente' };
+        return { mensaje: 'Contraseña actualizada correctamente' };
     }
 };
 exports.ServicioAutenticacion = ServicioAutenticacion;
@@ -750,9 +946,11 @@ let ServicioPrisma = class ServicioPrisma extends client_1.PrismaClient {
     }
     async onModuleInit() {
         await this.$connect();
+        console.log('✅ Prisma conectado a PostgreSQL (Autenticación)');
     }
     async onModuleDestroy() {
         await this.$disconnect();
+        console.log('❌ Prisma desconectado de PostgreSQL (Autenticación)');
     }
 };
 exports.ServicioPrisma = ServicioPrisma;

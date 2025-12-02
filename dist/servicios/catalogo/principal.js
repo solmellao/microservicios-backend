@@ -2,6 +2,112 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./compartido/dtos/actualizar-producto.dto.ts":
+/*!****************************************************!*\
+  !*** ./compartido/dtos/actualizar-producto.dto.ts ***!
+  \****************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ActualizarProductoDto = void 0;
+const class_validator_1 = __webpack_require__(/*! class-validator */ "class-validator");
+const swagger_1 = __webpack_require__(/*! @nestjs/swagger */ "@nestjs/swagger");
+class ActualizarProductoDto {
+    nombre;
+    precio;
+    inventario;
+    imagenUrl;
+}
+exports.ActualizarProductoDto = ActualizarProductoDto;
+__decorate([
+    (0, swagger_1.ApiProperty)({ required: false }),
+    (0, class_validator_1.IsString)({ message: 'El nombre debe ser texto' }),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], ActualizarProductoDto.prototype, "nombre", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ required: false }),
+    (0, class_validator_1.IsNumber)({}, { message: 'El precio debe ser un número' }),
+    (0, class_validator_1.IsPositive)({ message: 'El precio debe ser positivo' }),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Number)
+], ActualizarProductoDto.prototype, "precio", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ required: false }),
+    (0, class_validator_1.IsInt)({ message: 'El inventario debe ser un número entero' }),
+    (0, class_validator_1.Min)(0, { message: 'El inventario no puede ser negativo' }),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Number)
+], ActualizarProductoDto.prototype, "inventario", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ required: false }),
+    (0, class_validator_1.IsString)({ message: 'La imagen debe ser texto' }),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], ActualizarProductoDto.prototype, "imagenUrl", void 0);
+
+
+/***/ }),
+
+/***/ "./compartido/dtos/actualizar-usuario.dto.ts":
+/*!***************************************************!*\
+  !*** ./compartido/dtos/actualizar-usuario.dto.ts ***!
+  \***************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ActualizarUsuarioDto = void 0;
+const class_validator_1 = __webpack_require__(/*! class-validator */ "class-validator");
+const swagger_1 = __webpack_require__(/*! @nestjs/swagger */ "@nestjs/swagger");
+class ActualizarUsuarioDto {
+    nombre;
+    imagenUrl;
+}
+exports.ActualizarUsuarioDto = ActualizarUsuarioDto;
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        required: false,
+        example: 'Juan Pérez',
+        description: 'Nombre completo del usuario'
+    }),
+    (0, class_validator_1.IsString)({ message: 'El nombre debe ser texto' }),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], ActualizarUsuarioDto.prototype, "nombre", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        required: false,
+        example: 'uploads/usuarios/abc-123-def.jpg',
+        description: 'URL de la imagen del usuario'
+    }),
+    (0, class_validator_1.IsString)({ message: 'La imagen debe ser texto' }),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], ActualizarUsuarioDto.prototype, "imagenUrl", void 0);
+
+
+/***/ }),
+
 /***/ "./compartido/dtos/compra.dto.ts":
 /*!***************************************!*\
   !*** ./compartido/dtos/compra.dto.ts ***!
@@ -90,6 +196,8 @@ __exportStar(__webpack_require__(/*! ./iniciar-sesion.dto */ "./compartido/dtos/
 __exportStar(__webpack_require__(/*! ./registrar-usuario.dto */ "./compartido/dtos/registrar-usuario.dto.ts"), exports);
 __exportStar(__webpack_require__(/*! ./producto.dto */ "./compartido/dtos/producto.dto.ts"), exports);
 __exportStar(__webpack_require__(/*! ./compra.dto */ "./compartido/dtos/compra.dto.ts"), exports);
+__exportStar(__webpack_require__(/*! ./actualizar-producto.dto */ "./compartido/dtos/actualizar-producto.dto.ts"), exports);
+__exportStar(__webpack_require__(/*! ./actualizar-usuario.dto */ "./compartido/dtos/actualizar-usuario.dto.ts"), exports);
 
 
 /***/ }),
@@ -164,6 +272,7 @@ class CrearProductoDto {
     nombre;
     precio;
     inventario;
+    imagenUrl;
 }
 exports.CrearProductoDto = CrearProductoDto;
 __decorate([
@@ -192,6 +301,16 @@ __decorate([
     (0, class_validator_1.Min)(0, { message: 'El inventario no puede ser negativo' }),
     __metadata("design:type", Number)
 ], CrearProductoDto.prototype, "inventario", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        example: 'uploads/productos/abc123.jpg',
+        description: 'URL de la imagen del producto',
+        required: false
+    }),
+    (0, class_validator_1.IsString)({ message: 'La imagen debe ser texto' }),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], CrearProductoDto.prototype, "imagenUrl", void 0);
 class ReservarProductoDto {
     idProducto;
     idUsuario;
@@ -371,6 +490,7 @@ let Producto = class Producto {
     precio;
     inventario;
     inventarioReservado;
+    imagenUrl;
     fechaCreacion;
     fechaActualizacion;
     reservas;
@@ -396,6 +516,10 @@ __decorate([
     (0, typeorm_1.Column)({ type: 'int', default: 0, name: 'inventarioReservado' }),
     __metadata("design:type", Number)
 ], Producto.prototype, "inventarioReservado", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'varchar', length: 500, nullable: true }),
+    __metadata("design:type", Object)
+], Producto.prototype, "imagenUrl", void 0);
 __decorate([
     (0, typeorm_1.CreateDateColumn)({ name: 'fechaCreacion' }),
     __metadata("design:type", typeof (_a = typeof Date !== "undefined" && Date) === "function" ? _a : Object)
@@ -444,23 +568,101 @@ let ControladorProductos = class ControladorProductos {
     constructor(servicioProductos) {
         this.servicioProductos = servicioProductos;
     }
-    crear(dto) {
-        return this.servicioProductos.crear(dto);
+    async crear(dto) {
+        try {
+            return await this.servicioProductos.crear(dto);
+        }
+        catch (error) {
+            const rpcError = {
+                statusCode: error.status || 500,
+                error: error.message || 'Error al crear producto',
+            };
+            throw new microservices_1.RpcException(rpcError);
+        }
     }
-    obtenerTodos() {
-        return this.servicioProductos.obtenerTodos();
+    async obtenerTodos() {
+        try {
+            return await this.servicioProductos.obtenerTodos();
+        }
+        catch (error) {
+            const rpcError = {
+                statusCode: 500,
+                error: error.message || 'Error al obtener productos',
+            };
+            throw new microservices_1.RpcException(rpcError);
+        }
     }
-    obtenerPorIds(ids) {
-        return this.servicioProductos.obtenerProductosPorIds(ids);
+    async obtenerPorId(id) {
+        try {
+            return await this.servicioProductos.obtenerPorId(id);
+        }
+        catch (error) {
+            const rpcError = {
+                statusCode: 404,
+                error: error.message || 'Producto no encontrado',
+            };
+            throw new microservices_1.RpcException(rpcError);
+        }
     }
-    crearReserva(dto) {
-        return this.servicioProductos.crearReserva(dto);
+    async obtenerPorIds(ids) {
+        try {
+            return await this.servicioProductos.obtenerProductosPorIds(ids);
+        }
+        catch (error) {
+            const rpcError = {
+                statusCode: 500,
+                error: error.message || 'Error al obtener productos',
+            };
+            throw new microservices_1.RpcException(rpcError);
+        }
     }
-    confirmarCompra(dto) {
-        return this.servicioProductos.confirmarCompra(dto.articulos);
+    async actualizar(datos) {
+        try {
+            return await this.servicioProductos.actualizar(datos.id, datos.dto);
+        }
+        catch (error) {
+            const rpcError = {
+                statusCode: error.status || 500,
+                error: error.message || 'Error al actualizar producto',
+            };
+            throw new microservices_1.RpcException(rpcError);
+        }
     }
-    cancelarReserva(idReserva) {
-        return this.servicioProductos.cancelarReserva(idReserva);
+    async crearReserva(dto) {
+        try {
+            return await this.servicioProductos.crearReserva(dto);
+        }
+        catch (error) {
+            const rpcError = {
+                statusCode: error.status || 500,
+                error: error.message || 'Error al crear reserva',
+            };
+            throw new microservices_1.RpcException(rpcError);
+        }
+    }
+    async confirmarCompra(dto) {
+        try {
+            return await this.servicioProductos.confirmarCompra(dto.articulos);
+        }
+        catch (error) {
+            const rpcError = {
+                statusCode: error.status || 500,
+                error: error.message || 'Error al confirmar compra',
+            };
+            throw new microservices_1.RpcException(rpcError);
+        }
+    }
+    async cancelarReserva(idReserva) {
+        try {
+            return await this.servicioProductos.cancelarReserva(idReserva);
+        }
+        catch (error) {
+            const rpcError = {
+                statusCode: error.status || 500,
+                error: error.message || 'Error al cancelar reserva',
+            };
+            throw new microservices_1.RpcException(rpcError);
+        }
     }
 };
 exports.ControladorProductos = ControladorProductos;
@@ -468,37 +670,49 @@ __decorate([
     (0, microservices_1.MessagePattern)({ cmd: 'crear_producto' }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [typeof (_b = typeof dtos_1.CrearProductoDto !== "undefined" && dtos_1.CrearProductoDto) === "function" ? _b : Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], ControladorProductos.prototype, "crear", null);
 __decorate([
     (0, microservices_1.MessagePattern)({ cmd: 'obtener_todos_productos' }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], ControladorProductos.prototype, "obtenerTodos", null);
+__decorate([
+    (0, microservices_1.MessagePattern)({ cmd: 'obtener_producto_por_id' }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], ControladorProductos.prototype, "obtenerPorId", null);
 __decorate([
     (0, microservices_1.MessagePattern)({ cmd: 'obtener_productos_por_ids' }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Array]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], ControladorProductos.prototype, "obtenerPorIds", null);
+__decorate([
+    (0, microservices_1.MessagePattern)({ cmd: 'actualizar_producto' }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], ControladorProductos.prototype, "actualizar", null);
 __decorate([
     (0, microservices_1.MessagePattern)({ cmd: 'crear_reserva' }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [typeof (_c = typeof dtos_1.ReservarProductoDto !== "undefined" && dtos_1.ReservarProductoDto) === "function" ? _c : Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], ControladorProductos.prototype, "crearReserva", null);
 __decorate([
     (0, microservices_1.MessagePattern)({ cmd: 'confirmar_compra' }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [typeof (_d = typeof dtos_2.ProcesarCompraDto !== "undefined" && dtos_2.ProcesarCompraDto) === "function" ? _d : Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], ControladorProductos.prototype, "confirmarCompra", null);
 __decorate([
     (0, microservices_1.MessagePattern)({ cmd: 'cancelar_reserva' }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], ControladorProductos.prototype, "cancelarReserva", null);
 exports.ControladorProductos = ControladorProductos = __decorate([
     (0, common_1.Controller)(),
@@ -612,6 +826,7 @@ let ServicioProductos = ServicioProductos_1 = class ServicioProductos {
             precio: dto.precio,
             inventario: dto.inventario,
             inventarioReservado: 0,
+            imagenUrl: dto.imagenUrl || null,
         });
         return this.repositorioProductos.save(producto);
     }

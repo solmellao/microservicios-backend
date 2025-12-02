@@ -1,4 +1,4 @@
-import { IsString, IsNumber, IsPositive, IsInt, Min } from 'class-validator';
+import { IsString, IsNumber, IsPositive, IsInt, Min, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 /**
@@ -27,6 +27,16 @@ export class CrearProductoDto {
   @IsInt({ message: 'El inventario debe ser un número entero' })
   @Min(0, { message: 'El inventario no puede ser negativo' })
   inventario: number;
+
+  // ⭐ AGREGAR ESTE CAMPO
+  @ApiProperty({
+    example: 'uploads/productos/abc123.jpg',
+    description: 'URL de la imagen del producto',
+    required: false
+  })
+  @IsString({ message: 'La imagen debe ser texto' })
+  @IsOptional()
+  imagenUrl?: string;
 }
 
 /**

@@ -18,6 +18,10 @@ export class Producto {
   @Column({ type: 'int', default: 0, name: 'inventarioReservado' })
   inventarioReservado: number;
 
+  // ⭐ IMPORTANTE: Cambiar el tipo a "string | null" para permitir valores nulos
+  @Column({ type: 'varchar', length: 500, nullable: true })
+  imagenUrl: string | null;
+
   @CreateDateColumn({ name: 'fechaCreacion' })
   fechaCreacion: Date;
 

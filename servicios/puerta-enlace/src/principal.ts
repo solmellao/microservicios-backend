@@ -18,6 +18,11 @@ async function iniciar() {
   // Servir archivos estáticos desde la carpeta public
   app.useStaticAssets(join(__dirname, '..', 'public'));
 
+  // NUEVO: Servir imágenes subidas (productos y usuarios)
+  app.useStaticAssets(join(__dirname, '..', '..', '..', 'uploads'), {
+    prefix: '/uploads/',
+  });
+
   // Validación global
   app.useGlobalPipes(
     new ValidationPipe({

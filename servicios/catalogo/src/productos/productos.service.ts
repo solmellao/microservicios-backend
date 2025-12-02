@@ -5,7 +5,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository, In, } from 'typeorm';
+import { DataSource, Repository, In } from 'typeorm';
 import { Producto } from './producto.entidad';
 import { Reserva } from './reserva.entidad';
 import { CrearProductoDto, ReservarProductoDto } from '@compartido/dtos';
@@ -62,6 +62,7 @@ export class ServicioProductos {
 
   /**
    * Crear un nuevo producto
+   * MODIFICADO: Ahora incluye imagenUrl
    */
   async crear(dto: CrearProductoDto): Promise<Producto> {
     const producto = this.repositorioProductos.create({
@@ -69,6 +70,7 @@ export class ServicioProductos {
       precio: dto.precio,
       inventario: dto.inventario,
       inventarioReservado: 0,
+      imagenUrl: dto.imagenUrl || null,
     });
 
     return this.repositorioProductos.save(producto);
@@ -293,7 +295,6 @@ export class ServicioProductos {
 
   /**
    * Confirmar compra - Resta inventario directamente (sin verificar reservas)
-   * MÉTODO CORREGIDO PARA QUE FUNCIONE LA COMPRA
    */
   async confirmarCompra(articulos: any[]) {
     this.logger.log(`✅ Confirmando compra de ${articulos.length} artículos`);
